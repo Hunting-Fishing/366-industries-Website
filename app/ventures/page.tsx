@@ -1,0 +1,9 @@
+import Link from "next/link";
+import { ArrowLink, PageHero, Shell } from "../components";
+import { ventures } from "../site-data";
+
+export const metadata = { title: "Ventures" };
+export default function VenturesPage(){ return <Shell><PageHero image="/assets/ventures-hero.png" eyebrow="The portfolio" title="Different industries. One relentless standard."><p>366 Industries develops ventures where overlooked problems, practical technology and scalable business models meet.</p></PageHero>
+  <section className="section portfolio-grid">{ventures.map(v=><article id={v.slug} key={v.slug} className="portfolio-card"><Link className={`portfolio-card-image ${v.slug === "365-motor-sales" ? "logo-card-image" : ""}`} href={v.href} style={{backgroundImage:`linear-gradient(0deg,rgba(7,16,20,.82),rgba(7,16,20,.02)),url('${v.image}')`}} aria-label={`Open ${v.name}`}/><div className="portfolio-card-content"><div className="portfolio-top"><span>{v.number}</span><span className="tag">{v.category}</span></div><h2><Link href={v.href}>{v.name}</Link></h2><p>{v.description}</p><div className="impact"><small>Why it matters</small>{v.impact}</div><div className="card-footer"><span>{v.status}</span><Link href={v.href}>Explore project ↗</Link></div></div></article>)}</section>
+  <section className="section build-principles"><div className="section-label">How we build</div><div className="principles"><div><span>01</span><h3>Start with reality</h3><p>Field conditions and real users shape the product before hype does.</p></div><div><span>02</span><h3>Design the engine</h3><p>Every mission needs a durable model for funding, operation and growth.</p></div><div><span>03</span><h3>Earn the right to scale</h3><p>Pilots, evidence and accountable partnerships come before expansion.</p></div></div><ArrowLink href="/about#partner">Build alongside us</ArrowLink></section>
+</Shell>}
