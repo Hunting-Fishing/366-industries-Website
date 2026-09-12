@@ -118,6 +118,17 @@ export const ventures: Venture[] = [
     number: "09",
     image: "/assets/pipe-buyer-hero.png",
   },
+  {
+    slug: "remote-build-zone",
+    name: "Remote Build Zone",
+    category: "Interactive Robotics + Live Entertainment",
+    status: "Prototype online",
+    description: "A live remote-control platform where online viewers can operate physical RC vehicles, diecast racers, construction equipment and drones through streamed camera feeds and managed sessions.",
+    impact: "Turn real machines into safe, interactive online experiences while building toward autonomous pits, telemetry and persistent live racing.",
+    href: "/ventures/remote-build-zone",
+    number: "10",
+    image: "/assets/ventures-hero.png",
+  },
 ];
 
 export const projectDetails: ProjectDetail[] = ventures.map((venture) => ({
@@ -132,6 +143,7 @@ export const projectDetails: ProjectDetail[] = ventures.map((venture) => ({
     "philippines-crafted-sea-salt": "Source distinctive sea salt from producers across the Philippines and prepare it for responsible, premium export.",
     "366-ai-designer": "Move from a rough idea to a structured, visual and deployable digital product in one guided workspace.",
     "pipe-buyer": "A focused marketplace built to connect pipe inventory with Oil & Gas buyers who are ready to source.",
+    "remote-build-zone": "Drive real machines from anywhere: FPV racing, track cameras, queued online control and a path toward autonomous operation.",
   }[venture.slug] || venture.impact,
   overview: venture.description,
   pillars: {
@@ -180,8 +192,13 @@ export const projectDetails: ProjectDetail[] = ventures.map((venture) => ({
       { title: "Source faster", copy: "Give buyers a focused destination for new, used and surplus oilfield pipe instead of searching through broad equipment marketplaces." },
       { title: "Move inventory", copy: "Connect mills, distributors, yards, contractors and equipment owners with relevant Oil & Gas demand." },
     ],
+    "remote-build-zone": [
+      { title: "Drive live", copy: "Give approved online users timed control sessions over real RC machines with a managed queue, safety limits and operator handoff." },
+      { title: "See every angle", copy: "Combine low-latency FPV for the driver with track cameras and a broadcast feed for viewers, races and replays." },
+      { title: "Run continuously", copy: "Build toward battery telemetry, automated pit return, charging docks, autonomous safety behavior and unattended race-cycle recovery." },
+    ],
   }[venture.slug] || [],
-  nextStep: venture.slug === "365-motor-sales" ? "https://365motorsales.com" : venture.slug === "what-is-owed-to-you" ? "https://whatisowedtoyou.com" : venture.slug === "pipe-buyer" ? "https://www.pipebuyer.com" : venture.slug === "worldfix-games" ? "/games" : venture.slug === "the-366-initiative" ? "/humanity" : venture.slug === "366-ai-designer" ? "/ai-designer" : "/about#partner",
+  nextStep: venture.slug === "365-motor-sales" ? "https://365motorsales.com" : venture.slug === "what-is-owed-to-you" ? "https://whatisowedtoyou.com" : venture.slug === "pipe-buyer" ? "https://www.pipebuyer.com" : venture.slug === "remote-build-zone" ? "https://remote-build-zone.lovable.app" : venture.slug === "worldfix-games" ? "/games" : venture.slug === "the-366-initiative" ? "/humanity" : venture.slug === "366-ai-designer" ? "/ai-designer" : "/about#partner",
 }));
 
 export const humanityMissions = [
