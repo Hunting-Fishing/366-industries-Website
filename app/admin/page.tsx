@@ -9,6 +9,11 @@ export const metadata = {
 
 const campaigns = [
   {
+    name: "Solar Borehole & Smart Water Hubs (Ilocos Norte)",
+    href: "/water",
+    focus: "Off-grid solar borehole drilling, filtration, IoT water flow sensors, smart prepaid water dispensers & rural farming irrigation",
+  },
+  {
     name: "WildGuard Drone Network",
     href: "https://www.gofundme.com/f/wildguard-drone-network",
     focus: "Drone rescue, wildlife monitoring and disaster response",
@@ -62,6 +67,7 @@ export default async function AdminPage() {
           <h2>Public pages</h2>
           <div className="admin-links">
             <Link href="/" target="_blank">Homepage ↗</Link>
+            <Link href="/water" target="_blank">Solar Borehole &amp; Smart Water Hubs (/water) ↗</Link>
             <Link href="/humanity" target="_blank">Humanity ↗</Link>
             <Link href="/ventures" target="_blank">Projects ↗</Link>
             <Link href="/future" target="_blank">Community ideas ↗</Link>
@@ -70,13 +76,13 @@ export default async function AdminPage() {
           </div>
         </article>
         <article className="admin-panel">
-          <span>02 / FUNDRAISING</span>
+          <span>02 / FUNDRAISING &amp; GRANTS</span>
           <h2>Live campaigns</h2>
           {campaigns.map((campaign) => (
             <Link className="admin-campaign" href={campaign.href} target="_blank" rel="noreferrer" key={campaign.href}>
               <strong>{campaign.name}</strong>
               <small>{campaign.focus}</small>
-              <b>Open GoFundMe ↗</b>
+              <b>Open Campaign / Dossier ↗</b>
             </Link>
           ))}
         </article>
@@ -127,6 +133,7 @@ export default async function AdminPage() {
           <ul className="admin-checklist">
             <li><b>Complete:</b> Public website and custom domains</li>
             <li><b>Complete:</b> GoFundMe campaign links</li>
+            <li><b>Complete:</b> Solar Borehole &amp; Smart Water Hubs grant auditor verification pages (/water)</li>
             <li><b>Next:</b> Replace the temporary admin password</li>
             <li><b>Next:</b> Add official contact email and social accounts</li>
             <li><b>Next:</b> Add campaign updates, budgets and public impact reporting</li>

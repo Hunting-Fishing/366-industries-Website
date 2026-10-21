@@ -129,6 +129,17 @@ export const ventures: Venture[] = [
     number: "10",
     image: "/assets/ventures-hero.png",
   },
+  {
+    slug: "solar-borehole-water-hubs",
+    name: "Solar Borehole & Smart Water Hubs",
+    category: "Clean-Tech + Water Infrastructure",
+    status: "Pilot deployment — Ilocos Norte, PH",
+    description: "Off-grid Dual-Stream Solar Borehole Water Hubs combining deep-aquifer well drilling, solar submersible pumps, multi-stage water filtration, IoT water flow sensors and 24/7 smart prepaid water dispensers for homes, communities with power outages and rural farming irrigation.",
+    impact: "Deliver uninterrupted safe drinking water during typhoon blackouts and diesel-free dry-season groundwater irrigation for smallholder farmers in Ilocos Norte, the Philippines and globally.",
+    href: "/ventures/solar-borehole-water-hubs",
+    number: "11",
+    image: "/assets/community-relief.png",
+  },
 ];
 
 export const projectDetails: ProjectDetail[] = ventures.map((venture) => ({
@@ -144,6 +155,7 @@ export const projectDetails: ProjectDetail[] = ventures.map((venture) => ({
     "366-ai-designer": "Move from a rough idea to a structured, visual and deployable digital product in one guided workspace.",
     "pipe-buyer": "A focused marketplace built to connect pipe inventory with Oil & Gas buyers who are ready to source.",
     "remote-build-zone": "Drive real machines from anywhere: FPV racing, track cameras, queued online control and a path toward autonomous operation.",
+    "solar-borehole-water-hubs": "Deep borehole drilling, off-grid solar pumping, multi-stage filtration, IoT flow sensors and smart prepaid water dispensers for homes, blackout-hit communities and rural farms.",
   }[venture.slug] || venture.impact,
   overview: venture.description,
   pillars: {
@@ -197,6 +209,11 @@ export const projectDetails: ProjectDetail[] = ventures.map((venture) => ({
       { title: "See every angle", copy: "Combine low-latency FPV for the driver with track cameras and a broadcast feed for viewers, races and replays." },
       { title: "Run continuously", copy: "Build toward battery telemetry, automated pit return, charging docks, autonomous safety behavior and unattended race-cycle recovery." },
     ],
+    "solar-borehole-water-hubs": [
+      { title: "Drill & power with solar", copy: "Tap deep, climate-resilient aquifers with 100% off-grid solar submersible pumps so homes and communities never lose water during grid outages or typhoons." },
+      { title: "Filter & dispense 24/7", copy: "Deliver safe household drinking water through multi-stage ultrafiltration, UV purification and RFID smart prepaid water dispensers that self-fund local maintenance." },
+      { title: "Irrigate & monitor via IoT", copy: "Route metered borehole water through IoT water flow sensors to rural smallholder farms during the dry season while protecting aquifer health in real time." },
+    ],
   }[venture.slug] || [],
   nextStep: venture.slug === "365-motor-sales" ? "https://365motorsales.com" : venture.slug === "what-is-owed-to-you" ? "https://whatisowedtoyou.com" : venture.slug === "pipe-buyer" ? "https://www.pipebuyer.com" : venture.slug === "remote-build-zone" ? "https://remote-build-zone.lovable.app" : venture.slug === "worldfix-games" ? "/games" : venture.slug === "the-366-initiative" ? "/humanity" : venture.slug === "366-ai-designer" ? "/ai-designer" : "/about#partner",
 }));
@@ -204,12 +221,12 @@ export const projectDetails: ProjectDetail[] = ventures.map((venture) => ({
 export const humanityMissions = [
   { slug: "disaster-response-drones", number: "01 / AIR", title: "Disaster-response drones", copy: "Delivery concepts for food, medicine, communications equipment and GPS-tracked inflatable rafts when roads are cut off.", image: "/assets/drone-guardian.png", outcome: "Reach isolated people faster while keeping trained responders in control." },
   { slug: "coastal-safety", number: "02 / WATER", title: "Coastal safety", copy: "Aerial awareness for sharks, crocodiles, rip currents and people in distress—supporting trained responders, not replacing them.", image: "/assets/humanity-hero.png", outcome: "Give safety teams earlier visual awareness around beaches and waterways." },
-  { slug: "community-resilience", number: "03 / LAND", title: "Community resilience", copy: "Modular solar power, water, storage and communications designed for barangays facing storms and prolonged outages.", image: "/assets/community-relief.png", outcome: "Keep essential services available when the grid and supply routes fail." },
+  { slug: "community-resilience", number: "03 / LAND", title: "Community resilience & water", copy: "Off-grid solar borehole water wells, multi-stage filtration, smart prepaid water dispensers, IoT flow sensors and rural farm irrigation for barangays facing typhoons and power outages.", image: "/assets/community-relief.png", outcome: "Keep safe drinking water, farm irrigation and essential power running when the electric grid and supply routes fail." },
   { slug: "wildlife-protection", number: "04 / SCIENCE", title: "Wildlife protection", copy: "Responsible thermal monitoring and mapping tools for researchers, conservation teams and communities living near wildlife.", image: "/assets/hero-solutions-today.png", outcome: "Protect people and animals through earlier, evidence-based awareness." },
 ];
 
 export const futureIdeas = [
-  { title: "Community Power & Water", tag: "Preparedness", copy: "Affordable solar charging, water purification and communications packages for barangays facing storms and outages." },
+  { title: "Solar Borehole & Smart Water Hubs", tag: "Clean Water + Ag-Tech", copy: "Deep borehole drilling, solar submersible pumps, multi-stage filtration, IoT water flow sensors and smart prepaid water dispensers serving homes, outage-hit barangays and rural farmers in Ilocos Norte." },
   { title: "Local Aid Network", tag: "Coordination", copy: "Match urgent community needs with verified supplies, transport, volunteers and donors already close enough to help." },
   { title: "Drone Safety Teams", tag: "Rescue", copy: "Train local operators to support flood response, coastal awareness, medicine delivery and emergency mapping." },
   { title: "Small Business Classroom", tag: "Education", copy: "Short practical courses, buying groups and startup guides that help people turn local skills into dependable income." },

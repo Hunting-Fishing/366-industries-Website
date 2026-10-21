@@ -10,11 +10,92 @@ export default async function VentureDetail({params}:{params:Promise<{slug:strin
   if(!project) notFound();
   const external=project.nextStep.startsWith("http");
   if(slug==="pipe-buyer") return <PipeBuyerPage />;
+  if(slug==="solar-borehole-water-hubs") return <SolarWaterHubsPage />;
   return <Shell>
     <PageHero image={project.image} eyebrow={`${project.number} / ${project.category}`} title={project.name}><p>{project.headline}</p><div className="actions"><ArrowLink href={project.nextStep} external={external}>{external?"Visit live project":"Explore the work"}</ArrowLink><ArrowLink href="/ventures" secondary>All projects</ArrowLink></div></PageHero>
     <section className="section project-story"><div><div className="section-label">The project</div><h2>Built around a problem worth solving.</h2></div><p>{project.overview} {project.impact}</p></section>
     <section className="section project-pillars">{project.pillars.map((pillar,i)=><article key={pillar.title}><span>0{i+1}</span><h2>{pillar.title}</h2><p>{pillar.copy}</p></article>)}</section>
     <section className="closing-cta"><div className="section-label">Next move</div><h2>Help move {project.name} from ambition to evidence.</h2><ArrowLink href={project.nextStep} external={external}>{external?"Open the project":"Continue exploring"}</ArrowLink></section>
+  </Shell>;
+}
+
+export function SolarWaterHubsPage(){
+  const techStack=[
+    ["01","Deep-aquifer borehole drilling","Hydrogeological siting, resistivity surveys, deep borehole drilling, sanitary seals and food-grade uPVC casing tapping climate-resilient groundwater aquifers."],
+    ["02","Off-grid solar submersible pumps","100% solar-powered borehole extraction into elevated storage tanks—guaranteeing pressurized water for homes and communities during grid power outages and typhoons."],
+    ["03","Multi-stage water filtration","Automated sediment, ultrafiltration membrane and UV/chlorination treatment engineered to meet Philippine National Standards for Drinking Water (PNSDW) and WHO guidelines."],
+    ["04","Smart prepaid water dispensers","24/7 RFID card and mobile-wallet dispensing that cuts household safe water costs by 60–70% while automatically funding a transparent local Barangay Maintenance Reserve."],
+    ["05","IoT water flow sensors & telemetry","Inline digital water flow meters, pressure sensors and aquifer level probes providing real-time drawdown protection and predictive maintenance alerts before breakdowns occur."],
+    ["06","Rural farming water source","Metered raw borehole water routed to smallholder farm supply hydrants—eliminating expensive diesel pumping fuel during Ilocos Norte’s 6-month dry season."],
+  ];
+  const hubSpecs=[
+    "100% Off-Grid Solar Submersible Pumping",
+    "Ultrafiltration + UV Safe Drinking Water",
+    "24/7 RFID Smart Prepaid Water Dispensers",
+    "Digital IoT Water Flow & Aquifer Telemetry",
+    "Dry-Season Smallholder Farm Irrigation",
+    "Typhoon & Power-Outage Community Resilience",
+  ];
+  const grantRoadmap=[
+    ["Phase 01 — Flagship Barangay Hub (Ilocos Norte)","Commission 1 complete Dual-Stream Solar Borehole Hub serving 250+ rural households (~1,250 residents) and 35 smallholder farms in Ilocos Norte, validating 99%+ uptime during grid brownouts."],
+    ["Phase 02 — 6-Hub Regional Validation Pilot","Deploy 6 Dual-Stream Solar Borehole Hubs across water-scarce barangays in Ilocos Norte, serving ~9,000 rural residents and 300+ farming households with full IoT flow telemetry and water quality lab verification."],
+    ["Phase 03 — Academic & R&D Telemetry Validation","Collaborate with Canadian (NRC IRAP) and Philippine (DOST / Mariano Marcos State University) researchers on predictive pump diagnostics, smart dispenser controllers and sustainable aquifer recharge modeling."],
+    ["Phase 04 — Municipal & Irrigators' Association Scale","Scale to 500+ barangay and agricultural hubs across Northern Luzon and developing regions globally via Local Government Unit (LGU) Calamity/Development Funds, Zanjera farmer cooperatives and international WASH grants."],
+  ];
+  return <Shell>
+    <section className="pipe-hero" style={{backgroundImage:"url('/assets/community-relief.png')"}}>
+      <div className="pipe-hero-shade" />
+      <div className="pipe-hero-copy">
+        <div className="pipe-status"><i/> 1st Defence Industries (BC, Canada) • 366 Industries • Ilocos Norte (Philippines) • Wyoming (USA)</div>
+        <div className="section-label">11 / Clean-Tech + Water Infrastructure</div>
+        <h1>Drill deep.<br/><em>Power with solar.</em><br/>Water every home &amp; farm.</h1>
+        <p className="pipe-lead">Our Dual-Stream Solar Borehole &amp; Smart Water Hubs combine deep well drilling, off-grid solar pumping, multi-stage filtration, IoT water flow sensors and smart prepaid dispensers to serve rural homes, communities facing power outages and smallholder farms.</p>
+        <div className="actions"><ArrowLink href="/about#partner">Partner or fund a hub</ArrowLink><ArrowLink href="https://www.gofundme.com/f/clean-water-4-all-j2tyh" external secondary>Support Clean Water 4 All</ArrowLink></div>
+        <div className="pipe-audiences"><span>RURAL BARANGAYS</span><span>HOMES &amp; POWER OUTAGES</span><span>SMALLHOLDER FARMERS</span><span>SOLAR PUMPS</span><span>SMART PREPAID DISPENSERS</span><span>IOT FLOW SENSORS</span></div>
+      </div>
+    </section>
+
+    <section className="pipe-value section">
+      <div><div className="section-label">Built for climate &amp; outage resilience</div><h2>When the grid fails or the dry season hits, water cannot stop.</h2></div>
+      <div><p>In rural <strong>Ilocos Norte, Philippines</strong> and underserved regions globally, communities face two compounding crises: a severe 6-month dry season (November–April) that dries up shallow wells and parches smallholder farms, and frequent Super Typhoons and grid brownouts that disable electric water pumps for days or weeks. Meanwhile, up to 40% of traditional charity-drilled wells fail within three years because they lack off-grid power, flow telemetry and local maintenance revenue. We solve all three problems in one integrated system.</p><div className="pipe-proof"><b>One Solar Borehole. Two Essential Streams.</b><span>Stream A: Filtered Safe Drinking Water via Smart Prepaid Dispensers • Stream B: Metered Rural Farm Irrigation via IoT Flow Sensors</span></div></div>
+    </section>
+
+    <section className="pipe-spec-band">
+      <div><div className="section-label">Integrated clean-tech architecture</div><h2>Engineered for 15+ years of self-sustaining operation.</h2></div>
+      <div className="pipe-spec-grid">{hubSpecs.map((x,i)=><span key={x}><b>0{i+1}</b>{x}</span>)}</div>
+    </section>
+
+    <section className="section pipe-buyers">
+      <div className="section-heading"><div><div className="section-label">The 6-part technical stack</div><h2>From deep aquifer to household tap and farm field.</h2></div><p>Every Dual-Stream Solar Borehole Hub combines proven hydrogeological drilling with automated clean-tech hardware and transparent community governance.</p></div>
+      <div className="pipe-feature-grid">{techStack.map(([n,t,c])=><article key={n}><span>{n}</span><h3>{t}</h3><p>{c}</p></article>)}</div>
+      <div className="actions pipe-actions"><ArrowLink href="/about#partner">Request full technical &amp; grant dossier</ArrowLink></div>
+    </section>
+
+    <section className="pipe-sides">
+      <article><span>HOMES &amp; OUTAGES</span><h2>Uninterrupted safe drinking water.</h2><p>Solar submersible pumps and elevated storage keep multi-stage filtered water flowing to homes and 24/7 Smart Prepaid Water Dispensers even when typhoons or brownouts knock out municipal power grids.</p><ArrowLink href="/humanity">Explore humanitarian impact</ArrowLink></article>
+      <article><span>RURAL FARMING</span><h2>Diesel-free dry-season irrigation.</h2><p>Smallholder farmers growing rice, garlic, shallots and vegetables receive metered groundwater through IoT water flow sensors—eliminating crippling diesel pump fuel costs during the dry season.</p><ArrowLink href="/future">See community models</ArrowLink></article>
+      <article><span>SELF-SUSTAINING</span><h2>Built-in maintenance reserve.</h2><p>Affordable RFID prepaid water credits (saving families 60–70% vs. vended water) automatically fund filter replacements, local caretaker stipends and preventative technician servicing.</p><ArrowLink href="/about#partner">Partner with our team</ArrowLink></article>
+    </section>
+
+    <section className="section pipe-roadmap">
+      <div className="section-heading"><div><div className="section-label">Pilot &amp; scaling roadmap</div><h2>From Ilocos Norte flagship hubs to 500+ resilient communities.</h2></div><p>Our deployment model is structured in measurable, audited stages so grantmakers, government partners and local barangays can verify every liter delivered.</p></div>
+      <div className="pipe-roadmap-grid">{grantRoadmap.map(([t,c],i)=><article key={t}><span>{String(i+1).padStart(2,"0")} / DEPLOYMENT STAGE</span><h3>{t}</h3><p>{c}</p></article>)}</div>
+    </section>
+
+    <section id="auditor-verification" className="pipe-trust">
+      <div>
+        <div className="section-label">For grant auditors &amp; institutional funders</div>
+        <h2>Verified tri-national operations &amp; accountability.</h2>
+      </div>
+      <div className="pipe-trust-list">
+        <p><b>Canadian R&amp;D &amp; Corporate Lead</b><span><strong>1st Defence Industries</strong> &amp; <strong>366 Industries</strong> (British Columbia, Canada) lead systems engineering, IoT flow sensor/controller R&amp;D, North American procurement and institutional compliance.</span></p>
+        <p><b>Philippine Field &amp; Drilling Hub</b><span>Active SEC/DTI-registered operations with founders and field crew physically based in <strong>Ilocos Norte, Philippines</strong>—handling borehole drilling, barangay deployment, NWRB permitting and local maintenance.</span></p>
+        <p><b>United States Entity</b><span><strong>Wyoming LLC</strong> operations supporting US clean-tech equipment sourcing, cross-border commercial operations and international development grant execution.</span></p>
+        <p><b>Audit &amp; Telemetry Standards</b><span>Every grant-funded hub includes certified microbiological water quality testing, automated IoT liter-by-liter flow logs, gender-inclusive Barangay Water Association governance and ring-fenced financial reporting.</span></p>
+      </div>
+    </section>
+
+    <section className="closing-cta pipe-close" style={{backgroundImage:"linear-gradient(135deg,rgba(7,16,20,.94),rgba(7,16,20,.65)),url('/assets/community-relief.png')"}}><div className="section-label">Water security • Food security • Outage resilience</div><h2>Build permanent water infrastructure with us.</h2><p>We welcome inquiries from international grant auditors, government agencies (DOST, NRC IRAP, Global Affairs Canada), Rotary Clubs, universities and impact funders.</p><div className="actions"><ArrowLink href="mailto:partnerships@366industries.com">Contact Grant &amp; Engineering Desk</ArrowLink><ArrowLink href="/about#partner" secondary>View corporate &amp; partner details</ArrowLink></div></section>
   </Shell>;
 }
 
