@@ -1,8 +1,8 @@
 import { ArrowLink, Shell } from "../components";
 
 export const metadata = {
-  title: "366 AI Designer",
-  description: "Turn an idea into a working website or web application with a guided AI-powered creation workspace.",
+  title: "366 AI Designer & 400B+ Sovereign AI Compute",
+  description: "Turn an idea into a working website or web application with a guided AI-powered creation workspace, backed by our sovereign 400B+ parameter local AI compute roadmap.",
 };
 
 const buildSteps = [
@@ -22,7 +22,7 @@ export default function AiDesignerPage() {
         <p>Start a coding project, shape it through conversation and keep control of the source. Build websites, applications and working product ideas without first assembling a full technical team.</p>
         <div className="actions">
           <ArrowLink href="https://designer.366industries.com" external>Launch AI Designer</ArrowLink>
-          <ArrowLink href="https://designer.366industries.com" secondary external>Sign in or create account</ArrowLink>
+          <ArrowLink href="/grants" secondary>400B+ Compute &amp; Grant Roadmap</ArrowLink>
         </div>
       </div>
       <div className="ai-workspace" aria-label="Preview of the 366 AI Designer workspace">
@@ -55,7 +55,7 @@ export default function AiDesignerPage() {
 
     <section className="section ai-purpose">
       <div><div className="section-label">Why we are building it</div><h2>Good ideas should not stop at the technical barrier.</h2></div>
-      <div><p>Many people understand a problem deeply but cannot afford a designer, developer, product manager and infrastructure team before testing their solution. 366 AI Designer is intended to shorten that distance.</p><p>It will guide people toward a smaller, testable first product while keeping the owner in control of the decisions, content and final release.</p></div>
+      <div><p>Many people understand a problem deeply but cannot afford a designer, developer, product manager and infrastructure team before testing their solution. 366 AI Designer is intended to shorten that distance.</p><p>It guides founders, small businesses and community builders toward a testable product while keeping the owner in control of the decisions, source code and final release.</p></div>
     </section>
 
     <section id="how-it-works" className="section ai-process">
@@ -68,8 +68,21 @@ export default function AiDesignerPage() {
       <div className="ai-case-grid">
         <article><span>01</span><h3>Business websites</h3><p>Professional pages, lead capture, catalogs and customer journeys.</p></article>
         <article><span>02</span><h3>Web applications</h3><p>Member portals, marketplaces, internal tools and service platforms.</p></article>
-        <article><span>03</span><h3>Community systems</h3><p>Local directories, education tools, aid coordination and public resources.</p></article>
+        <article><span>03</span><h3>Community systems</h3><p>Local directories, water/energy telemetry dashboards, aid coordination and public resources.</p></article>
         <article><span>04</span><h3>Working prototypes</h3><p>Test an original product before committing a large development budget.</p></article>
+      </div>
+    </section>
+
+    <section id="sovereign-compute" className="pipe-trust">
+      <div>
+        <div className="section-label">Sovereign R&amp;D infrastructure • 1st Defence Industries &amp; 366 Industries</div>
+        <h2>400B+ Parameter Local AI Compute Core.</h2>
+      </div>
+      <div className="pipe-trust-list">
+        <p><b>Dedicated 400B+ Model Execution</b><span>Our R&amp;D roadmap scales on-premise high-VRAM multi-GPU workstation/server infrastructure capable of running 400B+ parameter open-weights reasoning, code-generation and multimodal vision models locally without third-party API bottlenecks.</span></p>
+        <p><b>Zero-Internet Disaster &amp; Field Resilience</b><span>When Super Typhoons or grid blackouts sever internet connectivity in rural deployment zones like Ilocos Norte, local 400B+ model inference keeps drone thermal analysis, aquifer telemetry and emergency coordination running offline.</span></p>
+        <p><b>Cross-Mission Telemetry Engine</b><span>The same local AI compute cluster powers 366 AI Designer code synthesis, WildGuard Drone computer vision, and predictive IoT water-flow diagnostics across our Solar Borehole Water Hubs.</span></p>
+        <p><b>Auditable R&amp;D &amp; Grant Alignment</b><span>Structured for Canadian (NRC IRAP, SR&amp;ED, PacifiCan), US and Philippine (DOST-PCIEERD) technical R&amp;D and sovereign compute infrastructure grants.</span></p>
       </div>
     </section>
 
@@ -86,7 +99,7 @@ export default function AiDesignerPage() {
 
     <section id="builder-access" className="ai-launch">
       <div><div className="section-label">Builder online / Ready to create</div><h2>Your next project<br/>starts here.</h2></div>
-      <div><p>Open 366 AI Designer, sign in or create your account, then describe the coding project you want to build. Your projects and account are managed securely inside the builder.</p><p>Already have an idea? Move directly into your workspace at <strong>designer.366industries.com</strong>.</p><div className="actions"><ArrowLink href="https://designer.366industries.com" external>Launch AI Designer</ArrowLink><ArrowLink href="https://designer.366industries.com" secondary external>Create account</ArrowLink></div></div>
+      <div><p>Open 366 AI Designer, sign in or create your account, then describe the coding project you want to build. Your projects and account are managed securely inside the builder.</p><p>Already have an idea? Move directly into your workspace at <strong>designer.366industries.com</strong>.</p><div className="actions"><ArrowLink href="https://designer.366industries.com" external>Launch AI Designer</ArrowLink><ArrowLink href="/grants" secondary>View Full Grant &amp; Compute Dossier</ArrowLink></div></div>
     </section>
   </Shell>;
 }

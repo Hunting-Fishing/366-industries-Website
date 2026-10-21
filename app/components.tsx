@@ -8,7 +8,8 @@ export function Header() {
   const [open, setOpen] = useState(false);
   const links = [
     ["Projects", "/ventures"],
-    ["Water & Grants", "/water"],
+    ["Water Hubs", "/water"],
+    ["Grants & Infra", "/grants"],
     ["AI Designer", "/ai-designer"],
     ["Humanity", "/humanity"],
     ["Community", "/future"],
@@ -31,7 +32,7 @@ export function Footer() {
   return (
     <footer className="footer">
       <div><Link className="brand" href="/"><span>366</span> INDUSTRIES</Link><p>Building what humanity needs next — in partnership with 1st Defence Industries (BC, Canada), Ilocos Norte Operations (Philippines) &amp; Wyoming LLC (USA).</p></div>
-      <div className="footer-links"><Link href="/ventures">Projects</Link><Link href="/water">Solar Water Hubs</Link><Link href="/ventures/pipe-buyer">Pipe Buyer</Link><Link href="/ai-designer">366 AI Designer</Link><Link href="/humanity">Humanity</Link><Link href="/future">Community ideas</Link><Link href="/games">Games</Link><Link href="/about">About &amp; Grants</Link></div>
+      <div className="footer-links"><Link href="/ventures">Projects</Link><Link href="/water">Solar Water Hubs</Link><Link href="/grants">Grants &amp; Equipment</Link><Link href="/ventures/pipe-buyer">Pipe Buyer</Link><Link href="/ai-designer">366 AI Designer (400B+)</Link><Link href="/humanity">Humanity &amp; Drones</Link><Link href="/future">Community ideas</Link><Link href="/about">About &amp; Audit</Link></div>
       <div className="footer-motto">LEAP YEARS TAKE BREAKS.<br/><strong>WE DO NOT.</strong></div>
       <div className="footer-bottom"><span>Canada (BC) ↔ Philippines (Ilocos Norte) ↔ USA (Wyoming) ↔ The World</span><span>© {new Date().getFullYear()} 366 Industries &amp; 1st Defence Industries</span></div>
     </footer>
