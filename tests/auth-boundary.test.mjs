@@ -76,3 +76,30 @@ test("anonymous browsers are redirected from the owner Commerce Studio", async (
   assert.ok([302,303,307,308].includes(response.status));
   assert.match(response.headers.get("location") || "", /\/admin$/);
 });
+
+
+test("Jordi private tracking API requires signed owner admin session", async () => {
+  const response=await request("/api/admin/jordi-workspace");
+  assert.equal(response.status,401);
+});
+test("forged owner email cannot access Jordi personal tracking area", async () => {
+  const member=encodeURIComponent(JSON.stringify({
+    email:"jordilwbailey@gmail.com",role:"admin",
+  }));
+  const response=await request("/api/admin/jordi-workspace", {
+    cookie:`industries_366_member=${member}`,
+  });
+  assert.equal(response.status,401);
+});
+test("anonymous visitors cannot open Jordi Shopify & Promotions page", async () => {
+  const response=await request("/admin/jordi-shopify-promotions");
+  assert.ok([302,303,307,308].includes(response.status));
+  assert.match(response.headers.get("location")||"","/admin");
+});
+test("public writes cannot create promotions or personal tasks", async () => {
+  const response=await worker.fetch(new Request("http://localhost/api/admin/jordi-workspace",{
+    method:"POST",headers:{"content-type":"application/json","origin":"http://localhost"},
+    body:JSON.stringify({recordType:"task",title:"Malicious task",area:"marketing",priority:"normal"}),
+  }),env,ctx);
+  assert.equal(response.status,401);
+});
