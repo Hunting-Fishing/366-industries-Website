@@ -57,7 +57,7 @@ export function Header() {
         <div className="top-utility-left">
           <span className="pulse-dot" aria-hidden="true" />
           <strong>HUMANITARIAN &amp; CLEAN-TECH INFRASTRUCTURE:</strong>
-          <span>1st Defence Industries (BC, Canada) • Ilocos Norte (Philippines) • Wyoming LLC (USA)</span>
+          <span>Global Humanitarian Efforts for Safety • Clean Water • Coastal Protection • Disaster Readiness</span>
         </div>
         <div className="top-utility-right">
           <Link href="/donate" className="utility-pill highlight">
@@ -188,7 +188,7 @@ export function Footer() {
             </div>
           </Link>
           <p>
-            Engineering practical humanitarian, clean-water, coastal safety, disaster-rescue and sovereign AI infrastructure across British Columbia (Canada), Ilocos Norte (Philippines), Wyoming (USA) and underserved regions globally.
+            Developing practical clean-water infrastructure, coastal safety technology, disaster preparedness and responsible AI solutions for communities worldwide.
           </p>
           <div className="footer-motto">
             LEAP YEARS TAKE BREAKS.<br />
@@ -216,7 +216,7 @@ export function Footer() {
             <Link href="/grants#capital-budget">$385K Capital &amp; Equipment Stack</Link>
             <Link href="/ai-designer">366 AI Designer Program</Link>
             <Link href="/ai-designer#sovereign-compute">400B+ Sovereign AI Compute Core</Link>
-            <Link href="/about">Tri-National Audit &amp; Compliance</Link>
+            <Link href="/about">Governance &amp; Partner Information</Link>
           </div>
         </div>
 
@@ -234,8 +234,8 @@ export function Footer() {
       </div>
 
       <div className="footer-bottom">
-        <span>Canada (BC: 1st Defence Industries) ↔ Philippines (Ilocos Norte Operations) ↔ USA (Wyoming LLC) ↔ Global Field Operations</span>
-        <span>© {new Date().getFullYear()} 366 Industries &amp; 1st Defence Industries • Ring-Fenced Humanitarian &amp; Grant Accounting</span>
+        <span>Global Humanitarian Efforts for Safety • Local Partnerships • Measurable Impact</span>
+        <span>© {new Date().getFullYear()} 366 Industries &amp; 1st Defence Industries • Humanitarian Funding &amp; Grant Transparency</span>
       </div>
     </footer>
   );

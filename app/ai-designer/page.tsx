@@ -1,4 +1,5 @@
 import { ArrowLink, Shell } from "../components";
+import { ProjectBriefTabs } from "../project-brief-tabs";
 
 export const metadata = {
   title: "366 AI Designer & 400B+ Sovereign AI Compute",
@@ -57,6 +58,8 @@ export default function AiDesignerPage() {
       <div><div className="section-label">Why we are building it</div><h2>Good ideas should not stop at the technical barrier.</h2></div>
       <div><p>Many people understand a problem deeply but cannot afford a designer, developer, product manager and infrastructure team before testing their solution. 366 AI Designer is intended to shorten that distance.</p><p>It guides founders, small businesses and community builders toward a testable product while keeping the owner in control of the decisions, source code and final release.</p></div>
     </section>
+
+    <ProjectBriefTabs project="ai" />
 
     <section id="how-it-works" className="section ai-process">
       <div className="section-heading"><div><div className="section-label">The creation path</div><h2>One workspace.<br/>Four clear stages.</h2></div><p>No wall of technical setup before the idea becomes visible.</p></div>

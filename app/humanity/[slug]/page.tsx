@@ -1,6 +1,7 @@
 import { notFound } from "next/navigation";
 import { ArrowLink, PageHero, Shell } from "../../components";
 import { humanityMissions } from "../../site-data";
+import { ProjectBriefTabs } from "../../project-brief-tabs";
 
 export function generateStaticParams() {
   return humanityMissions.map((m) => ({ slug: m.slug }));
@@ -51,6 +52,10 @@ export default async function MissionDetail({
           )}
         </div>
       </section>
+
+      {slug === "coastal-safety" && <ProjectBriefTabs project="coastal" />}
+      {slug === "disaster-response-drones" && <ProjectBriefTabs project="rescue" />}
+      {slug === "community-resilience" && <ProjectBriefTabs project="water" />}
 
       <section className="impact-band">
         <div className="section-label">Operating &amp; Grant Compliance Rules</div>

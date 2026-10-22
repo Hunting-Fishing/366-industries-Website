@@ -1,6 +1,7 @@
 import { notFound } from "next/navigation";
 import { ArrowLink, PageHero, Shell } from "../../components";
 import { projectDetails } from "../../site-data";
+import { ProjectBriefTabs } from "../../project-brief-tabs";
 
 export function generateStaticParams() {
   return projectDetails.map((p) => ({ slug: p.slug }));
@@ -237,6 +238,8 @@ export function SolarWaterHubsPage() {
           </ArrowLink>
         </div>
       </section>
+
+      <ProjectBriefTabs project="water" />
 
       {/* GLOBAL WATER + COASTAL DRONE SYNERGY */}
       <section className="section" style={{ paddingTop: 0 }}>
