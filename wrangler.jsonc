@@ -3,7 +3,6 @@
   "name": "366-industries-website",
   "main": "dist/server/index.js",
   "compatibility_date": "2026-03-01",
-  "compatibility_flags": ["nodejs_compat"],
   "assets": {
     "directory": "dist/client",
     "binding": "ASSETS"
