@@ -7,7 +7,7 @@ const heroShowcaseCards = [
   {
     code: "01 / GLOBAL CLEAN WATER",
     title: "Solar Borehole & Smart Water Hubs",
-    subtitle: "Deep-aquifer solar wells, ultrafiltration + UV, IoT flow sensors & 24/7 RFID dispensers",
+    subtitle: "Off-grid water access, treatment, aquifer stewardship and accountable operations",
     image: "/assets/solar-water-hub-hero.png",
     href: "/water",
     badge: "WASH & AG-TECH",
@@ -15,7 +15,7 @@ const heroShowcaseCards = [
   {
     code: "02 / COASTAL SAFETY",
     title: "Shark & Crocodile Drone Network",
-    subtitle: "Polarized optical, thermal IR & edge-AI coastal overwatch protecting beaches & estuaries",
+    subtitle: "Proposed non-lethal aerial safety observation, field validation and responder alerts",
     image: "/assets/coastal-shark-croc-drone.png",
     href: "/humanity/coastal-safety",
     badge: "WILDGUARD COASTAL",
@@ -23,7 +23,7 @@ const heroShowcaseCards = [
   {
     code: "03 / DISASTER RESCUE",
     title: "Typhoon & Flood Rescue UAVs",
-    subtitle: "Thermal survivor detection, medical/water payload drops & GPS self-inflating rescue rafts",
+    subtitle: "Emergency-response planning, authorized aerial mapping and controlled field trials",
     image: "/assets/disaster-rescue-drone.png",
     href: "/humanity/disaster-response-drones",
     badge: "EMERGENCY SAR",
@@ -31,7 +31,7 @@ const heroShowcaseCards = [
   {
     code: "04 / 366 AI PROGRAM",
     title: "366 AI Designer & 400B+ Core",
-    subtitle: "Guided AI software creation workspace backed by sovereign 400B+ local AI compute",
+    subtitle: "Digital tools and a separate, evidence-led offline AI infrastructure roadmap",
     image: "/assets/sovereign-ai-400b-core.png",
     href: "/ai-designer",
     badge: "ONLINE BUILDER",
@@ -71,7 +71,7 @@ const humanitarianAllocations = [
     width: "15%",
     tag: "PILLAR 04 • LOCAL GOVERNANCE & TRAINING",
     title: "Community Technicians & Lifeguard Readiness",
-    copy: "Builds ring-fenced local maintenance reserves and trains Barangay Water Associations, municipal lifeguards and licensed local drone responders across the Philippines, North America and developing coastlines worldwide.",
+    copy: "Builds local maintenance reserves and trains community water teams, coastal responders and qualified drone operators wherever safety needs are documented.",
     href: "/grants",
     cta: "View Audit & Grant Model",
   },
@@ -82,7 +82,7 @@ const globalGrantCategories = [
     code: "GRANT TRACK 01",
     title: "Global Clean Water (WASH) & Climate-Smart Agriculture",
     targets:
-      "Global Innovation Fund ($220K) • D-Prize ($20K) • Rotary Foundation Global WASH ($30K–$400K) • Grand Challenges Canada • FIT",
+      "International WASH innovation programs • community water funders • climate-adaptation and rural resilience grants",
     scope:
       "Funds off-grid Solar Borehole Water Hubs, ultrafiltration, IoT water flow telemetry, 24/7 smart prepaid dispensers and smallholder farm irrigation.",
   },
@@ -106,7 +106,7 @@ const globalGrantCategories = [
     code: "GRANT TRACK 04",
     title: "Sovereign 400B+ AI Compute, Clean Energy & Deep-Tech R&D",
     targets:
-      "NRC IRAP Canada • SR&ED • DOST-PCIEERD Equipment Outlay (₱5M) • IEEE Smart Village ($100K) • UNDP-GEF Small Grants",
+      "Public-interest research grants • clean-tech equipment programs • community energy and resilience funders",
     scope:
       "Funds our 400B+ parameter local AI workstation/server cluster (powering 366 AI Designer & offline drone CV), community solar microgrids and 4x4 field trucks.",
   },
@@ -128,7 +128,7 @@ export default function Home() {
           <div className="hero-copy-modern">
             <div className="hero-kicker">
               GLOBAL HUMANITARIAN &amp; CLEAN-TECH INFRASTRUCTURE •{" "}
-              <strong>CANADA • PHILIPPINES • USA</strong>
+              <strong>GLOBAL HUMANITARIAN EFFORTS FOR SAFETY</strong>
             </div>
             <h1>
               Clean water.<br />
@@ -149,9 +149,9 @@ export default function Home() {
             </div>
 
             <div className="hero-trust-pills">
-              <span>✓ Ring-Fenced Humanitarian Website Funds</span>
-              <span>✓ 24/7 IoT Water &amp; Drone Telemetry</span>
-              <span>✓ Global Grant &amp; Audit Ready</span>
+              <span>Transparent humanitarian funding model</span>
+              <span>Measurable safety and resilience outcomes</span>
+              <span>Grant and partner due-diligence briefings</span>
             </div>
           </div>
 
@@ -168,6 +168,7 @@ export default function Home() {
                   <small>{card.code}</small>
                   <strong>{card.title}</strong>
                   <p>{card.subtitle}</p>
+                  <span className="showcase-link">Explore mission &amp; funding details <span aria-hidden="true">↗</span></span>
                 </div>
               </Link>
             ))}
@@ -178,26 +179,30 @@ export default function Home() {
       {/* INSTITUTIONAL METRICS BAR */}
       <section className="metrics-strip" aria-label="Key Institutional Metrics">
         <div className="metrics-strip-inner">
-          <div className="metric-item">
+          <Link href="/water#project-brief" className="metric-item">
             <span className="metric-kicker">CLEAN WATER &amp; AG-TECH</span>
             <strong>Dual-Stream Solar Hubs</strong>
-            <p>24/7 safe household drinking water + metered dry-season smallholder farm irrigation</p>
-          </div>
-          <div className="metric-item">
-            <span className="metric-kicker">COASTAL DRONE PROTECTION</span>
-            <strong>Shark &amp; Crocodile Overwatch</strong>
-            <p>AI optical &amp; thermal UAV patrols protecting beaches, estuaries &amp; coastal communities</p>
-          </div>
-          <div className="metric-item">
-            <span className="metric-kicker">EMERGENCY RESPONSE</span>
+            <p>Explore proposed off-grid water access, treatment and irrigation planning.</p>
+            <span className="metric-link">Read full project brief ↗</span>
+          </Link>
+          <Link href="/humanity/coastal-safety#project-brief" className="metric-item">
+            <span className="metric-kicker">COASTAL SAFETY &amp; CONSERVATION</span>
+            <strong>Coastal Safety Monitoring</strong>
+            <p>Review the proposed non-lethal drone pilot, responder protocols and field validation.</p>
+            <span className="metric-link">Read full project brief ↗</span>
+          </Link>
+          <Link href="/humanity/disaster-response-drones#project-brief" className="metric-item">
+            <span className="metric-kicker">EMERGENCY PREPAREDNESS</span>
             <strong>Disaster Rescue &amp; Relief</strong>
-            <p>Typhoon &amp; flood search-and-rescue, medical drops &amp; GPS inflatable rescue rafts</p>
-          </div>
-          <div className="metric-item">
-            <span className="metric-kicker">TRI-NATIONAL COMPLIANCE</span>
-            <strong>100% Audit-Ready Entities</strong>
-            <p>Registered across BC (Canada), Ilocos Norte (Philippines) &amp; Wyoming (USA)</p>
-          </div>
+            <p>See the proposed disaster-readiness roadmap, field trials and safety requirements.</p>
+            <span className="metric-link">Read full project brief ↗</span>
+          </Link>
+          <Link href="/grants#grant-programs" className="metric-item">
+            <span className="metric-kicker">GLOBAL PARTNER OPPORTUNITIES</span>
+            <strong>Grant &amp; Investor Briefings</strong>
+            <p>Review project funding needs, proposed milestones, verification and safeguards.</p>
+            <span className="metric-link">Explore grant opportunities ↗</span>
+          </Link>
         </div>
       </section>
 
@@ -209,22 +214,22 @@ export default function Home() {
             <h2>How our website &amp; commercial funds power global humanitarian action.</h2>
           </div>
           <p>
-            Unlike traditional charities that rely solely on one-time donations, <strong>366 Industries</strong> and <strong>1st Defence Industries</strong> operate a <strong>Dual-Engine Humanitarian Model</strong>: revenues from our software (<strong>366 AI Designer</strong>), commercial marketplaces and games are pooled with public donations and international grants into a <strong>Ring-Fenced Humanitarian Impact Reserve</strong>.
+            <strong>366 Industries</strong> and <strong>1st Defence Industries</strong> propose a dual-engine humanitarian model: eligible commercial proceeds from software, marketplaces and games may be combined with donations and grant awards under documented, separately reportable project budgets. The structure and allocations are subject to legal, financial and donor review.
           </p>
         </div>
 
         <div className="pledge-banner-card">
           <div className="pledge-banner-left">
-            <span className="pledge-pill">AUDITED HUMANITARIAN FUND ALLOCATION</span>
+            <span className="pledge-pill">PROPOSED HUMANITARIAN FUNDING MODEL</span>
             <h3>Every commercial venture, donation &amp; grant dollar strengthens frontline community survival.</h3>
             <p>
-              Our website funds, platform subscriptions, marketplace fees and non-dilutive institutional grants are structured with transparent accounting to deploy permanent clean water infrastructure, coastal predator protection and emergency disaster rescues across the Philippines and underserved regions globally.
+              Our proposed funding framework combines commercial revenue, eligible grants and voluntary support to pursue durable water infrastructure, coastal safety research and disaster preparedness for communities worldwide.
             </p>
           </div>
           <div className="pledge-banner-right">
             <div className="pledge-stat">
-              <strong>100%</strong>
-              <span>Ring-Fenced Grant &amp; Humanitarian Reserve Accounting</span>
+              <strong>OPEN</strong>
+              <span>Project Budgets &amp; Independent Due Diligence</span>
             </div>
             <div className="pledge-stat">
               <strong>24/7</strong>
@@ -430,7 +435,7 @@ export default function Home() {
               Review our complete $385,000 USD Multi-Grant Capital, Water, Drone, Clean Energy &amp; 400B+ AI Dossier
             </strong>
             <span>
-              Includes line-item equipment specifications, UN SDG alignment, and tri-national corporate verification.
+              Includes proposed equipment budgets, UN SDG alignment and project-specific diligence requirements.
             </span>
           </div>
           <div className="actions" style={{ marginTop: 0 }}>
