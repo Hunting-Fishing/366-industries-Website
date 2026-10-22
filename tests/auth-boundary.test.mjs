@@ -45,3 +45,34 @@ test("forged unsigned member cookie is not a valid login", async () => {
   assert.equal(result.authenticated, false);
   assert.equal(result.user, null);
 });
+
+
+test("anonymous requests cannot list private Commerce OS products", async () => {
+  const response = await request("/api/admin/commerce");
+  assert.equal(response.status, 401);
+});
+
+test("forged unsigned owner cookie cannot access Commerce OS", async () => {
+  const cookie = encodeURIComponent(JSON.stringify({
+    email:"jordilwbailey@gmail.com",role:"admin",
+  }));
+  const response = await request("/api/admin/commerce", {
+    cookie: `industries_366_member=${cookie}`,
+  });
+  assert.equal(response.status, 401);
+});
+
+test("unauthenticated visitors cannot write catalog products", async () => {
+  const response = await worker.fetch(new Request("http://localhost/api/admin/commerce", {
+    method:"POST",
+    headers: {"content-type":"application/json","origin":"http://localhost"},
+    body: JSON.stringify({action:"create",kind:"digital",title:"Test Product",price:9}),
+  }), env, ctx);
+  assert.equal(response.status, 401);
+});
+
+test("anonymous browsers are redirected from the owner Commerce Studio", async () => {
+  const response = await request("/admin/commerce");
+  assert.ok([302,303,307,308].includes(response.status));
+  assert.match(response.headers.get("location") || "", /\/admin$/);
+});
