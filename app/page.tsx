@@ -112,6 +112,24 @@ const globalGrantCategories = [
   },
 ];
 
+// Home-facing copy stays geographically neutral. Detailed corporate/entity
+// information remains accessible in the respective project and governance pages.
+function homeVentureName(slug: string, name: string) {
+  return slug === "philippines-crafted-sea-salt"
+    ? "Crafted Sea Salt & Coastal Livelihoods"
+    : name;
+}
+function homeVentureDescription(slug: string, description: string) {
+  return slug === "365-motor-sales"
+    ? "A vehicle and equipment marketplace connecting buyers, sellers, workshops, parts and ownership records."
+    : description;
+}
+function homeIdeaCopy(title: string, copy: string) {
+  return title === "Solar Borehole & Smart Water Hubs"
+    ? "Deep borehole drilling, solar pumping, filtration, IoT flow sensors and community water dispensers for water-stressed households and farmers worldwide."
+    : copy;
+}
+
 export default function Home() {
   const humanitarianVentures = ventures.filter((v) => v.division === "humanitarian");
   const aiVentures = ventures.filter((v) => v.division === "ai");
@@ -221,7 +239,7 @@ export default function Home() {
         <div className="pledge-banner-card">
           <div className="pledge-banner-left">
             <span className="pledge-pill">PROPOSED HUMANITARIAN FUNDING MODEL</span>
-            <h3>Every commercial venture, donation &amp; grant dollar strengthens frontline community survival.</h3>
+            <h3>A transparent pathway from funding commitments to measurable safety outcomes.</h3>
             <p>
               Our proposed funding framework combines commercial revenue, eligible grants and voluntary support to pursue durable water infrastructure, coastal safety research and disaster preparedness for communities worldwide.
             </p>
@@ -282,7 +300,7 @@ export default function Home() {
               <div className="section-label">A / CLEAN DRINKING WATER &amp; AG-TECH</div>
               <h3>Dual-Stream Solar Borehole &amp; Smart Water Hubs</h3>
               <p>
-                We drill deep into climate-resilient aquifers and power extraction with 100% off-grid solar submersible pumps. Each hub delivers multi-stage ultrafiltered + UV safe drinking water via 24/7 RFID Smart Prepaid Dispensers while routing metered irrigation water to smallholder farmers through inline IoT water flow sensors.
+                Proposed hubs would be engineered around site-specific aquifer assessment, off-grid solar pumps, appropriate drinking-water treatment, accessible dispensing and measured irrigation, subject to technical feasibility and commissioning.
               </p>
               <ul className="pillar-spec-list">
                 <li>Uninterrupted safe household water during Super Typhoons &amp; grid blackouts</li>
@@ -412,7 +430,7 @@ export default function Home() {
             <h2>Engineered to qualify for premier humanitarian, water, drone &amp; R&amp;D grants worldwide.</h2>
           </div>
           <p>
-            Grant auditors and institutional funders require registered legal entities, measurable field outcomes, local university/municipal partnerships and sustainable post-grant maintenance. We check every box across three countries.
+            Grant reviewers assess legal eligibility, measurable outcomes, local partnerships, sound budgets and post-grant maintenance. Our project briefings show the planned evidence and the documents still required before any funding submission.
           </p>
         </div>
 
@@ -463,7 +481,7 @@ export default function Home() {
               DIVISION I • HUMANITARIAN, CLEAN WATER &amp; COASTAL DRONE SAFETY
             </span>
             <p>
-              Frontline physical infrastructure funded by institutional grants, community donations and ring-fenced platform revenues.
+              Proposed humanitarian infrastructure supported through applications for grants, voluntary donations and eligible commercial proceeds.
             </p>
           </div>
           <div className="venture-list">
@@ -472,9 +490,9 @@ export default function Home() {
                 <span className="venture-number">{v.number}</span>
                 <div>
                   <span className="tag">{v.category}</span>
-                  <h3>{v.name}</h3>
+                  <h3>{homeVentureName(v.slug, v.name)}</h3>
                 </div>
-                <p>{v.description}</p>
+                <p>{homeVentureDescription(v.slug, v.description)}</p>
                 <Link href={v.href} aria-label={`Explore ${v.name}`}>
                   ↗
                 </Link>
@@ -499,9 +517,9 @@ export default function Home() {
                 <span className="venture-number">{v.number}</span>
                 <div>
                   <span className="tag">{v.category}</span>
-                  <h3>{v.name}</h3>
+                  <h3>{homeVentureName(v.slug, v.name)}</h3>
                 </div>
-                <p>{v.description}</p>
+                <p>{homeVentureDescription(v.slug, v.description)}</p>
                 <Link href={v.href} aria-label={`Explore ${v.name}`}>
                   ↗
                 </Link>
@@ -526,9 +544,9 @@ export default function Home() {
                 <span className="venture-number">{v.number}</span>
                 <div>
                   <span className="tag">{v.category}</span>
-                  <h3>{v.name}</h3>
+                  <h3>{homeVentureName(v.slug, v.name)}</h3>
                 </div>
-                <p>{v.description}</p>
+                <p>{homeVentureDescription(v.slug, v.description)}</p>
                 <Link
                   href={v.href}
                   target={v.external ? "_blank" : undefined}
@@ -550,7 +568,7 @@ export default function Home() {
             <h2>Practical community programs in development.</h2>
           </div>
           <p>
-            Every program advances through community consultation, realistic engineering budgets and audited field validation.
+            Each proposed program is planned around consultation, realistic equipment budgets, safety review and independently verifiable field testing.
           </p>
         </div>
         <div className="idea-grid">
@@ -560,7 +578,7 @@ export default function Home() {
                 0{i + 1} / {idea.tag}
               </span>
               <h3>{idea.title}</h3>
-              <p>{idea.copy}</p>
+              <p>{homeIdeaCopy(idea.title, idea.copy)}</p>
             </article>
           ))}
         </div>
