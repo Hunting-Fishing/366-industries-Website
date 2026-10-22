@@ -102,16 +102,19 @@ export default async function AdminPage() {
 
       <section className="admin-grid">
         <article className="admin-panel" style={{gridColumn:"1 / -1",border:"1px solid #45c4a2"}}>
-          <span>02 / PRIVATE COMMERCE OS</span>
-          <h2>Shopify &amp; AI Agent Business Studio</h2>
+          <span>02 / JORDI'S PERSONAL BUSINESS SPACE</span>
+          <h2>Jordi Shopify &amp; Promotions</h2>
           <p>
-            Owner-only workspace for dropshipping, print-on-demand, digital
-            products, original creations, conversation-starter apparel, and
-            future books. Create and review product ideas, generate drafts,
-            and connect Shopify safely.
+            Your private workspace within 366 Industries for Shopify,
+            dropshipping, print-on-demand, digital products, original creations,
+            upcoming books, AI agents, affiliates, promotions, campaign planning
+            and personal business build tasks. Kept separate from other ventures
+            and restricted to your signed owner account.
           </p>
           <div className="admin-links">
-            <Link href="/admin/commerce">↗ Open Private Commerce Studio</Link>
+            <Link href="/admin/jordi-shopify-promotions">
+              ↗ Open Jordi Shopify &amp; Promotions
+            </Link>
           </div>
         </article>
 
