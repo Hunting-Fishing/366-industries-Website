@@ -44,7 +44,7 @@ export const JORDI_COMMERCE_SUPABASE_REF = "ujkizgblscqcejghxemb";
 function dataConfig() {
   const expectedUrl = "https://" + JORDI_COMMERCE_SUPABASE_REF + ".supabase.co";
   const ref = process.env.JORDI_SHOPIFY_SUPABASE_PROJECT_REF || JORDI_COMMERCE_SUPABASE_REF;
-  const explicitUrl = (process.env.JORDI_SHOPIFY_SUPABASE_URL || expectedUrl).replace(/\\/+$/, "");
+  const explicitUrl = (process.env.JORDI_SHOPIFY_SUPABASE_URL || expectedUrl).replace(new RegExp("/+$"), "");
   if (ref !== JORDI_COMMERCE_SUPABASE_REF || explicitUrl !== expectedUrl) {
     throw new Error("Jordi Commerce Supabase project does not match the verified 366 Industries project.");
   }
@@ -53,7 +53,7 @@ function dataConfig() {
   // URL exactly matches the owner's confirmed project. Otherwise the dedicated
   // JORDI_SHOPIFY_SUPABASE_SECRET_KEY is mandatory.
   const genericUrl = (process.env.SUPABASE_URL ||
-    process.env.NEXT_PUBLIC_SUPABASE_URL || "").replace(/\\/+$/, "");
+    process.env.NEXT_PUBLIC_SUPABASE_URL || "").replace(new RegExp("/+$"), "");
   const sharedKey = genericUrl === expectedUrl
     ? (process.env.SUPABASE_SERVICE_ROLE_KEY || process.env.SUPABASE_SECRET_KEY || "")
     : "";
