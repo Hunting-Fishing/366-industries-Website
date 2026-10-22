@@ -71,6 +71,7 @@ export async function POST(request: Request) {
     let resolvedRegion = body.region || "Global (Canada • Philippines • USA)";
     let resolvedRole: "admin" | "member" = "member";
     let authUserId: string | null = null;
+    let authAccessToken: string | null = null;
 
     if (mode === "signup") {
       const result = await supabaseSignUpUser({
@@ -96,6 +97,7 @@ export async function POST(request: Request) {
         });
       }
       authUserId = result.authUserId;
+      authAccessToken = result.accessToken;
     } else {
       const result = await supabaseSignInUser({
         email,
@@ -111,6 +113,7 @@ export async function POST(request: Request) {
         );
       }
       authUserId = result.authUserId;
+      authAccessToken = result.accessToken;
       resolvedRole = result.role;
       if (result.profile) {
         derivedName = result.profile.name;
@@ -136,7 +139,10 @@ export async function POST(request: Request) {
     try {
       signedMember = await issueMemberSession(user);
       if (mode === "login" && resolvedRole === "admin" && isAdminEmail(email)) {
-        signedAdmin = await createAdminSessionToken();
+        if (!getSupabaseConfig()?.serviceRoleKey) {
+          throw new Error("Administrator session guard is not configured.");
+        }
+        signedAdmin = await createAdminSessionToken(authAccessToken || "");
       }
     } catch {
       return NextResponse.json(

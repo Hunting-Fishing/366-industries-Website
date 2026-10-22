@@ -1,11 +1,15 @@
 import { NextResponse } from "next/server";
 import {
   adminCookie,
-  constantTimeEqual,
   createAdminSessionToken,
 } from "../../../admin/auth";
 import { issueMemberSession } from "../../../lib/member-session";
-import { isAdminEmail, ROOT_ADMIN_EMAIL, supabaseSignInUser } from "../../../lib/supabase";
+import {
+  getSupabaseConfig,
+  isAdminEmail,
+  ROOT_ADMIN_EMAIL,
+  supabaseSignInUser,
+} from "../../../lib/supabase";
 import type { MemberSession } from "../../auth/session/route";
 
 export async function POST(request: Request) {
@@ -21,25 +25,25 @@ export async function POST(request: Request) {
   if (!isAdminEmail(email) || !password) {
     return NextResponse.json({ ok: false, message: "Invalid admin credentials." }, { status: 401 });
   }
-
-  let authenticatedWithSupabase = false;
-  const configuredPassword = process.env.ADMIN_PASSWORD || "";
-  // Environment-password recovery is opt-in; do not authorize based only on
-  // a supplied email, local fallback data, or an unverified signup.
-  let authorized = configuredPassword.length >= 16 &&
-    constantTimeEqual(password, configuredPassword);
-
-  if (!authorized) {
-    const auth = await supabaseSignInUser({
-      email,
-      password,
-      fallbackName: "366 Industries Owner",
-      fallbackAccountType: "Administrator",
-      fallbackRegion: "Global",
-    });
-    authorized = Boolean(auth.synced && auth.accessToken && auth.authUserId && auth.role === "admin" && !auth.error);
-    authenticatedWithSupabase = authorized;
+  if (!getSupabaseConfig()?.serviceRoleKey) {
+    return NextResponse.json(
+      { ok: false, message: "Administrator authentication is temporarily unavailable." },
+      { status: 503 }
+    );
   }
+
+  // Supabase Auth is the sole administrator password authority. A second
+  // environment-password bypass would remain valid after an account recovery.
+  const auth = await supabaseSignInUser({
+    email,
+    password,
+    fallbackName: "366 Industries Owner",
+    fallbackAccountType: "Administrator",
+    fallbackRegion: "Global",
+  });
+  const authorized = Boolean(
+    auth.synced && auth.accessToken && auth.authUserId && auth.role === "admin" && !auth.error
+  );
 
   if (!authorized) {
     return NextResponse.json({ ok: false, message: "Invalid admin credentials." }, { status: 401 });
@@ -51,18 +55,18 @@ export async function POST(request: Request) {
     role: "admin",
     accountType: "Administrator",
     region: "Global",
-    supabaseSynced: authenticatedWithSupabase,
+    supabaseSynced: true,
     createdAt: new Date().toISOString(),
   };
 
   let adminSession: string;
   let memberSession: string;
   try {
-    adminSession = await createAdminSessionToken();
+    adminSession = await createAdminSessionToken(auth.accessToken as string);
     memberSession = await issueMemberSession(user);
   } catch {
     return NextResponse.json(
-      { ok: false, message: "Server admin session key is not configured." },
+      { ok: false, message: "Administrator session could not be established." },
       { status: 503 }
     );
   }

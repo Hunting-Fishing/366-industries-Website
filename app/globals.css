@@ -55,6 +55,9 @@
 .admin-login-form .button{width:100%;cursor:pointer}
 .admin-login-form .button:disabled{opacity:.65;cursor:wait}
 .form-error{color:#ff936e!important;margin:0;font-size:14px}
+.form-notice{color:var(--teal)!important;margin:0;font-size:14px;line-height:1.55}
+.admin-reset-link{border:0;background:transparent;color:var(--teal);padding:4px 0;text-align:left;text-decoration:underline;text-underline-offset:4px;cursor:pointer;font:inherit}
+.admin-reset-link:disabled{opacity:.6;cursor:wait}
 .admin-back{display:inline-block;color:var(--stone);font-size:13px;margin-top:12px}
 .admin-back:hover{color:var(--ivory)}
 .admin-dashboard{min-height:100svh;background:var(--void)}

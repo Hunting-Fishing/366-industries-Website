@@ -13,7 +13,7 @@ type Product = {
 };
 type Snapshot = {
   ok:boolean; configured:boolean; products:Product[]; shopifyConfigured:boolean;
-  aiConfigured:boolean; message?:string;
+  shopifyWebhookConfigured:boolean; aiConfigured:boolean; message?:string;
   orders?:Array<{id:string;total:number;currency:string;financial_status:string;created_at:string}>;
   events?:Array<{id:string;agent:string;action:string;result:string;created_at:string}>;
 };
@@ -74,6 +74,8 @@ export function CommerceStudio() {
   const [form,setForm]=useState(emptyForm);
   const [filter,setFilter]=useState<Kind|"all">("all");
   const [selected,setSelected]=useState<string|null>(null);
+  const [shopifyCheck,setShopifyCheck]=useState("");
+  const [shopifyVerified,setShopifyVerified]=useState(false);
 
   const refresh=useCallback(async()=>{
     try {
@@ -84,7 +86,23 @@ export function CommerceStudio() {
       setError("");
     } catch(err) {setError(err instanceof Error?err.message:"Unable to load products.");}
   },[]);
+  // The fetch yields before updating state; the rule cannot infer that boundary.
+  // eslint-disable-next-line react-hooks/set-state-in-effect
   useEffect(()=>{void refresh();},[refresh]);
+
+  async function verifyShopify() {
+    setPending("shopify-check");setShopifyCheck("");setError("");
+    try {
+      const response=await fetch("/api/admin/shopify/status",{cache:"no-store"});
+      const result=await response.json() as {ok:boolean;message?:string};
+      if(!response.ok||!result.ok)throw new Error(result.message||"Unable to verify Shopify.");
+      setShopifyVerified(true);
+      setShopifyCheck(result.message||"Shopify connection verified.");
+    } catch(err) {
+      setShopifyVerified(false);
+      setError(err instanceof Error?err.message:"Unable to verify Shopify.");
+    } finally {setPending("");}
+  }
 
   async function send(method:"POST"|"PATCH",payload:Record<string,unknown>,busy:string) {
     setPending(busy);setMessage("");setError("");
@@ -127,7 +145,7 @@ export function CommerceStudio() {
         ["REVIEWED / DRAFT",String(verified)],
         ["ORDER SUMMARIES",String(snapshot?.orders?.length||0)],
         ["DATABASE",snapshot?.configured?"Connected":"Needs setup"],
-        ["SHOPIFY",snapshot?.shopifyConfigured?"Credentials ready":"Not connected"],
+        ["SHOPIFY",shopifyVerified?"Connected & verified":snapshot?.shopifyConfigured?"Configured, not verified":"Not connected"],
       ].map(([name,value],i)=><section key={name} style={{...section,padding:17,borderTop:"3px solid "+themeColors[i]}}>
         <div style={{fontSize:11,color:"#8bb0ca",fontWeight:800}}>{name}</div>
         <strong style={{fontSize:24,display:"block",marginTop:10}}>{value}</strong>
@@ -139,6 +157,15 @@ export function CommerceStudio() {
         {snapshot.message} The concept board below still works, but saving catalog items requires
         Supabase server-side credentials and the repository migration. No browser-side API keys are required.
       </p>
+    </section>}
+    {snapshot?.shopifyConfigured&&<section style={{...section,padding:17}}>
+      <strong>Shopify target: kefuqu-mv.myshopify.com</strong>
+      <p style={{color:"#bad0e0"}}>The backend is locked to the preserved active store. This read-only check verifies the app credentials, immutable store identity and required scopes; it does not create or change products.</p>
+      {!snapshot.shopifyWebhookConfigured&&<p style={{color:"#f5c46e"}}>Order webhooks still need the Shopify app client secret for HMAC verification.</p>}
+      <button type="button" style={btn} disabled={Boolean(pending)} onClick={()=>void verifyShopify()}>
+        {pending==="shopify-check"?"Verifying…":"Verify Shopify connection"}
+      </button>
+      {shopifyCheck&&<p role="status" style={{color:"#81e0b8",marginBottom:0}}>{shopifyCheck}</p>}
     </section>}
     {error&&<div role="alert" style={{padding:15,border:"1px solid #ff9a9a",borderRadius:10,background:"#481c25",color:"#fff"}}>{error}</div>}
     {message&&<div role="status" style={{padding:15,border:"1px solid #67f5c1",borderRadius:10,background:"#123c36"}}>{message}</div>}

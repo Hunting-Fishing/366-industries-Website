@@ -4,7 +4,8 @@ import {
   assertSameOrigin, commerceDatabaseConfigured, commerceKinds, commerceRest,
   contribution, generateCommerceCopy, getCommerceProduct, htmlEscape, isUuid,
   listCommerceProducts, recordCommerceEvent, safeAmount, safeText,
-  shopifyConfigured, shopifyGraphQL, updateCommerceProduct,
+  shopifyConfigured, shopifyGraphQL, shopifyWebhookConfigured, updateCommerceProduct,
+  verifyShopifyConnection,
   type CommerceKind, type CommerceProduct,
 } from "../../../lib/commerce-os";
 
@@ -30,6 +31,7 @@ export async function GET() {
   if (!commerceDatabaseConfigured()) {
     return NextResponse.json({
       ok: true, configured: false, products: [], shopifyConfigured: shopifyConfigured(),
+      shopifyWebhookConfigured: shopifyWebhookConfigured(),
       aiConfigured: Boolean(process.env.OPENAI_API_KEY),
       message: "Data storage is not connected. Set Supabase environment secrets and apply commerce migration 002.",
     }, {headers: {"Cache-Control":"no-store"}});
@@ -45,6 +47,7 @@ export async function GET() {
     return NextResponse.json({
       ok: true, configured: true, products, orders, events,
       shopifyConfigured: shopifyConfigured(),
+      shopifyWebhookConfigured: shopifyWebhookConfigured(),
       aiConfigured: Boolean(process.env.OPENAI_API_KEY),
     }, {headers: {"Cache-Control":"no-store"}});
   } catch (err) { return rejectError(err); }
@@ -96,6 +99,11 @@ export async function POST(request: Request) {
 
     if (action === "shopify-draft") {
       if (!shopifyConfigured()) return jsonError("Connect Shopify credentials before creating drafts.", 503);
+      try {
+        await verifyShopifyConnection();
+      } catch {
+        return jsonError("Verify the preserved Shopify store and required app scopes before creating drafts.", 503);
+      }
       if (product.status !== "approved" || !product.rights_confirmed || !product.source_verified ||
         !product.description || contribution(product) <= 0 || product.shopify_id)
         return jsonError("Approve reviewed, verified, profitable product before Shopify sync.", 409);

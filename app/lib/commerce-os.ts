@@ -1,6 +1,12 @@
 /* 366 Commerce OS — owner-only, server-side data and Shopify connectors.
    NEVER import this module into a client component. */
 import "server-only";
+import {
+  missingShopifyScopes,
+  shopifyAdminConfigurationReady,
+  shopifyIdentityMatches,
+} from "./shopify-policy.mjs";
+import {selectShopifyWebhookSecret} from "./shopify-webhook-core.mjs";
 
 export const commerceKinds = ["dropshipping", "print_on_demand", "digital", "original_creation"] as const;
 export type CommerceKind = typeof commerceKinds[number];
@@ -41,6 +47,17 @@ export function contribution(p: CommerceProduct) {
  */
 export const JORDI_COMMERCE_SUPABASE_REF = "ujkizgblscqcejghxemb";
 
+/**
+ * The only Shopify shop this backend may access. Keeping both the immutable
+ * shop GID and canonical myshopify domain in code prevents a mistyped runtime
+ * variable from directing owner-approved writes to another store.
+ */
+export const VERIFIED_SHOPIFY_SHOP = "kefuqu-mv.myshopify.com";
+export const VERIFIED_SHOPIFY_SHOP_ID = "gid://shopify/Shop/84267827426";
+export const VERIFIED_SHOPIFY_SUBDOMAIN = VERIFIED_SHOPIFY_SHOP.replace(".myshopify.com", "");
+export const VERIFIED_SHOPIFY_API_VERSION = "2026-10";
+export const REQUIRED_SHOPIFY_SCOPES = ["read_orders", "write_products"] as const;
+
 function dataConfig() {
   const expectedUrl = "https://" + JORDI_COMMERCE_SUPABASE_REF + ".supabase.co";
   const ref = process.env.JORDI_SHOPIFY_SUPABASE_PROJECT_REF || JORDI_COMMERCE_SUPABASE_REF;
@@ -69,9 +86,27 @@ export function commerceDatabaseConfigured() {
 }
 
 export function shopifyConfigured() {
-  return Boolean(process.env.SHOPIFY_SHOP &&
-    (process.env.SHOPIFY_ACCESS_TOKEN ||
-      (process.env.SHOPIFY_CLIENT_ID && process.env.SHOPIFY_CLIENT_SECRET)));
+  return shopifyAdminConfigurationReady(
+    process.env,
+    VERIFIED_SHOPIFY_SUBDOMAIN,
+    VERIFIED_SHOPIFY_API_VERSION
+  );
+}
+
+/** Return the Shopify app client secret used to verify webhook HMACs.
+ * In access-token mode it must be supplied separately because the token does
+ * not contain it. A conflicting override fails closed.
+ */
+export function shopifyWebhookSecret(): string {
+  return selectShopifyWebhookSecret(
+    shopifyConfigured(),
+    process.env.SHOPIFY_CLIENT_SECRET,
+    process.env.SHOPIFY_WEBHOOK_SECRET
+  );
+}
+
+export function shopifyWebhookConfigured() {
+  return Boolean(shopifyWebhookSecret());
 }
 
 /** Only called by protected server routes. Never accepts caller-provided table names. */
@@ -96,6 +131,49 @@ export async function commerceRest<T>(table: "commerce_products" | "commerce_ord
   if (prefer === "return=minimal" && method !== "GET") return undefined as T;
   const text = await response.text();
   return (text ? JSON.parse(text) : []) as T;
+}
+
+export type ShopifyWebhookOutcome = "applied" | "duplicate" | "stale";
+
+/** Atomically claims one delivery and conditionally updates its order summary. */
+export async function ingestShopifyOrderWebhook(input: {
+  deliveryId: string;
+  topic: string;
+  orderId: string;
+  total: number;
+  currency: string;
+  financialStatus: string;
+  createdAt: string;
+  occurredAt: string;
+}): Promise<ShopifyWebhookOutcome> {
+  const {url, key} = dataConfig();
+  const headers: Record<string, string> = {
+    apikey: key,
+    "Content-Type": "application/json",
+  };
+  if (!key.startsWith("sb_secret_")) headers.Authorization = "Bearer " + key;
+  const response = await fetch(url + "/rest/v1/rpc/ingest_shopify_order_webhook", {
+    method: "POST",
+    headers,
+    body: JSON.stringify({
+      p_delivery_id: input.deliveryId,
+      p_topic: input.topic,
+      p_order_id: input.orderId,
+      p_total: input.total,
+      p_currency: input.currency,
+      p_financial_status: input.financialStatus,
+      p_created_at: input.createdAt,
+      p_occurred_at: input.occurredAt,
+    }),
+    cache: "no-store",
+    signal: AbortSignal.timeout(10_000),
+  });
+  if (!response.ok) throw new Error("Shopify webhook database transaction failed.");
+  const outcome = await response.json() as ShopifyWebhookOutcome;
+  if (!["applied", "duplicate", "stale"].includes(outcome)) {
+    throw new Error("Shopify webhook database returned an invalid outcome.");
+  }
+  return outcome;
 }
 
 export async function listCommerceProducts() {
@@ -185,16 +263,22 @@ export async function generateCommerceCopy(product: CommerceProduct) {
 }
 
 async function shopifyAccessToken(shop: string) {
-  if (process.env.SHOPIFY_ACCESS_TOKEN) return process.env.SHOPIFY_ACCESS_TOKEN;
-  if (!process.env.SHOPIFY_CLIENT_ID || !process.env.SHOPIFY_CLIENT_SECRET)
+  const accessToken = process.env.SHOPIFY_ACCESS_TOKEN?.trim() || "";
+  const clientId = process.env.SHOPIFY_CLIENT_ID?.trim() || "";
+  const clientSecret = process.env.SHOPIFY_CLIENT_SECRET?.trim() || "";
+  if (accessToken && (clientId || clientSecret)) {
+    throw new Error("Configure exactly one Shopify credential mode.");
+  }
+  if (accessToken) return accessToken;
+  if (!clientId || !clientSecret)
     throw new Error("Shopify credentials not configured.");
   const result = await fetch("https://" + shop + "/admin/oauth/access_token", {
     method: "POST",
     headers: {"Content-Type": "application/x-www-form-urlencoded"},
     body: new URLSearchParams({
       grant_type: "client_credentials",
-      client_id: process.env.SHOPIFY_CLIENT_ID,
-      client_secret: process.env.SHOPIFY_CLIENT_SECRET,
+      client_id: clientId,
+      client_secret: clientSecret,
     }),
     signal: AbortSignal.timeout(20000),
   });
@@ -205,11 +289,15 @@ async function shopifyAccessToken(shop: string) {
 }
 
 export async function shopifyGraphQL(query: string, variables: Record<string, unknown>) {
-  const name = process.env.SHOPIFY_SHOP || "";
-  if (!/^[a-z0-9][a-z0-9-]*$/i.test(name)) throw new Error("Set SHOPIFY_SHOP to a myshopify.com subdomain only.");
-  const version = process.env.SHOPIFY_API_VERSION || "2026-10";
-  if (!/^\d{4}-\d{2}$/.test(version)) throw new Error("Invalid Shopify API version.");
-  const shop = name + ".myshopify.com";
+  const name = process.env.SHOPIFY_SHOP?.trim().toLowerCase() || "";
+  if (name !== VERIFIED_SHOPIFY_SUBDOMAIN) {
+    throw new Error("Shopify target does not match the verified 366 Industries store.");
+  }
+  const version = process.env.SHOPIFY_API_VERSION?.trim() || VERIFIED_SHOPIFY_API_VERSION;
+  if (version !== VERIFIED_SHOPIFY_API_VERSION) {
+    throw new Error("Shopify API version does not match the validated integration version.");
+  }
+  const shop = VERIFIED_SHOPIFY_SHOP;
   const token = await shopifyAccessToken(shop);
   const response = await fetch("https://" + shop + "/admin/api/" + version + "/graphql.json", {
     method: "POST",
@@ -221,4 +309,41 @@ export async function shopifyGraphQL(query: string, variables: Record<string, un
   const data = await response.json() as {data?: Record<string, unknown>; errors?: unknown[]};
   if (data.errors?.length || !data.data) throw new Error("Shopify returned GraphQL errors.");
   return data.data;
+}
+
+export async function verifyShopifyConnection() {
+  const data = await shopifyGraphQL(
+    "query VerifyShopifyConnection { shop { id name myshopifyDomain } currentAppInstallation { id accessScopes { handle } } }",
+    {},
+  );
+  const shop = data.shop as {id?: string; name?: string; myshopifyDomain?: string} | undefined;
+  if (!shopifyIdentityMatches(shop, VERIFIED_SHOPIFY_SHOP, VERIFIED_SHOPIFY_SHOP_ID)) {
+    throw new Error("Shopify credentials belong to a different store.");
+  }
+  const installation = data.currentAppInstallation as {
+    id?: string;
+    accessScopes?: Array<{handle?: string}>;
+  } | undefined;
+  const grantedScopes = (installation?.accessScopes || []).map((scope) => scope.handle);
+  const missingScopes = missingShopifyScopes(grantedScopes, REQUIRED_SHOPIFY_SCOPES);
+  if (!installation?.id || missingScopes.length) {
+    throw new ShopifyScopeError(missingScopes);
+  }
+  return {
+    id: shop.id,
+    name: shop.name || "My Store 9",
+    domain: shop.myshopifyDomain,
+    installationId: installation.id,
+    scopes: grantedScopes.filter((scope): scope is string => Boolean(scope)).sort(),
+  };
+}
+
+export class ShopifyScopeError extends Error {
+  readonly missingScopes: readonly string[];
+
+  constructor(missingScopes: readonly string[]) {
+    super("Shopify app is missing required access scopes.");
+    this.name = "ShopifyScopeError";
+    this.missingScopes = missingScopes;
+  }
 }
