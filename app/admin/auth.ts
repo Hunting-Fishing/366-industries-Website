@@ -1,34 +1,40 @@
 import { cookies } from "next/headers";
-import { isAdminEmail, ROOT_ADMIN_EMAIL } from "../lib/supabase";
+import { ROOT_ADMIN_EMAIL } from "../lib/supabase";
 
 const COOKIE_NAME = "industries_366_admin";
-const MEMBER_COOKIE_NAME = "industries_366_member";
-const COOKIE_PAYLOAD = "366-admin-session-v1";
-const DEFAULT_FALLBACK_SECRET = "366-default-admin-session-secret-key-2026";
+const TOKEN_VERSION = "v2";
+const SESSION_MS = 7 * 24 * 60 * 60 * 1000;
 
-function textBytes(value: string) {
-  return new TextEncoder().encode(value);
+function getSessionSecret() {
+  const secret = process.env.ADMIN_SESSION_SECRET;
+  if (!secret || secret.length < 32) {
+    throw new Error("ADMIN_SESSION_SECRET must be configured (at least 32 characters).");
+  }
+  return secret;
 }
 
-function toHex(bytes: ArrayBuffer) {
-  return Array.from(new Uint8Array(bytes), (byte) =>
+function toHex(buffer: ArrayBuffer) {
+  return Array.from(new Uint8Array(buffer), (byte) =>
     byte.toString(16).padStart(2, "0")
   ).join("");
 }
 
-export async function createAdminSessionToken() {
-  const secret = process.env.ADMIN_SESSION_SECRET || DEFAULT_FALLBACK_SECRET;
-
+async function sign(value: string) {
   const key = await crypto.subtle.importKey(
     "raw",
-    textBytes(secret),
+    new TextEncoder().encode(getSessionSecret()),
     { name: "HMAC", hash: "SHA-256" },
     false,
     ["sign"]
   );
-  return toHex(
-    await crypto.subtle.sign("HMAC", key, textBytes(COOKIE_PAYLOAD))
-  );
+  return toHex(await crypto.subtle.sign("HMAC", key, new TextEncoder().encode(value)));
+}
+
+export async function createAdminSessionToken() {
+  const expiration = Date.now() + SESSION_MS;
+  const nonce = crypto.randomUUID();
+  const payload = `${TOKEN_VERSION}.${expiration}.${nonce}`;
+  return `${payload}.${await sign(payload)}`;
 }
 
 export function constantTimeEqual(left: string, right: string) {
@@ -42,42 +48,27 @@ export function constantTimeEqual(left: string, right: string) {
 
 export async function getAuthenticatedAdminEmail(): Promise<string | null> {
   const cookieStore = await cookies();
-
-  // 1. Check member session cookie for Jordilwbailey@gmail.com or role === 'admin'
-  const memberRaw = cookieStore.get(MEMBER_COOKIE_NAME)?.value;
-  if (memberRaw) {
-    try {
-      const parsed = JSON.parse(decodeURIComponent(memberRaw)) as {
-        email?: string;
-        role?: string;
-      };
-      if (isAdminEmail(parsed.email) || parsed.role === "admin") {
-        return parsed.email?.toLowerCase() || ROOT_ADMIN_EMAIL;
-      }
-    } catch {
-      // ignore malformed cookie
-    }
-  }
-
-  // 2. Check dedicated admin cookie
   const presented = cookieStore.get(COOKIE_NAME)?.value ?? "";
-  if (presented) {
-    try {
-      const expectedToken = await createAdminSessionToken();
-      if (constantTimeEqual(presented, expectedToken)) {
-        return ROOT_ADMIN_EMAIL;
-      }
-    } catch {
-      // ignore
-    }
+  const parts = presented.split(".");
+  if (parts.length !== 4 || parts[0] !== TOKEN_VERSION) return null;
+
+  const [, expiry, nonce, signature] = parts;
+  const expiresAt = Number(expiry);
+  if (!Number.isSafeInteger(expiresAt) || expiresAt <= Date.now() || !/^[0-9a-f-]{36}$/.test(nonce) || !/^[0-9a-f]{64}$/.test(signature)) {
+    return null;
   }
 
-  return null;
+  try {
+    const expected = await sign(`${TOKEN_VERSION}.${expiry}.${nonce}`);
+    return constantTimeEqual(signature, expected) ? ROOT_ADMIN_EMAIL : null;
+  } catch {
+    // Fail closed if the server signing secret is missing or invalid.
+    return null;
+  }
 }
 
 export async function isAdminAuthenticated() {
-  const email = await getAuthenticatedAdminEmail();
-  return Boolean(email);
+  return Boolean(await getAuthenticatedAdminEmail());
 }
 
 export const adminCookie = {
