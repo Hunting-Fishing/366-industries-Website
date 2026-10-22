@@ -1,6 +1,7 @@
 -- Jordi Shopify & Promotions: private tracking section inside the 366 Industries Supabase project.
--- Apply only to the verified 366 Industries Supabase project, never 365 Motor Sales,
--- Barangay Buddy or 366-AI-Software-Homebrew.
+-- Owner-confirmed project: ujkizgblscqcejghxemb (366-AI-Software-Homebrew)
+-- under the 366 Industries AI Platform organization. The older warning
+-- about using this project was superseded when the owner supplied its URL.
 -- No public/normal-member database permissions or RLS policies are granted.
 CREATE TABLE IF NOT EXISTS public.commerce_promotions (
   id uuid PRIMARY KEY DEFAULT gen_random_uuid(),
