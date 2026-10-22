@@ -32,7 +32,7 @@ export const ventures: Venture[] = [
       "Deliver uninterrupted safe drinking water during typhoon blackouts and diesel-free dry-season groundwater irrigation for smallholder farmers in the Philippines and water-stressed regions globally.",
     href: "/water",
     number: "01",
-    image: "/assets/community-relief.png",
+    image: "/assets/solar-water-hub-hero.png",
   },
   {
     slug: "the-366-initiative",
@@ -46,7 +46,7 @@ export const ventures: Venture[] = [
       "Keep coastlines safe from shark and crocodile encounters and reach isolated disaster survivors faster with trained local responders.",
     href: "/humanity",
     number: "02",
-    image: "/assets/drone-guardian.png",
+    image: "/assets/coastal-shark-croc-drone.png",
   },
   {
     slug: "366-ai-designer",
@@ -60,7 +60,7 @@ export const ventures: Venture[] = [
       "Give founders, small businesses and community builders the ability to create useful software while helping fund our global humanitarian missions.",
     href: "/ai-designer",
     number: "03",
-    image: "/assets/ventures-hero.png",
+    image: "/assets/sovereign-ai-400b-core.png",
   },
   {
     slug: "pipe-buyer",
@@ -385,7 +385,7 @@ export const humanityMissions = [
     number: "01 / COASTAL & WATERWAY PROTECTION",
     title: "Shark & Crocodile Drone Protection Network",
     copy: "AI-assisted aerial, polarized-optical and thermal drone patrols along coastlines, beaches, river mouths and estuaries where sharks, saltwater crocodiles and rip currents threaten swimmers, families and fishermen.",
-    image: "/assets/humanity-hero.png",
+    image: "/assets/coastal-shark-croc-drone.png",
     outcome:
       "Provide real-time early warning, automated beach/community alerts, lifeguard dispatch and drop-deployed flotation devices so coastal communities and visitors stay safe in the water.",
     specs: [
@@ -400,7 +400,7 @@ export const humanityMissions = [
     number: "02 / EMERGENCY SEARCH & RESCUE",
     title: "Disaster-Response & Rescue UAV Fleet",
     copy: "All-weather heavy-payload and thermal reconnaissance drones engineered to locate stranded survivors and deliver clean water, trauma medicine, emergency radios and GPS-tracked inflatable rescue rafts when typhoons or floods sever roads.",
-    image: "/assets/drone-guardian.png",
+    image: "/assets/disaster-rescue-drone.png",
     outcome:
       "Reach isolated families across flooded barangays, washed-out bridges and storm-hit coastlines in minutes rather than days while keeping human responders out of lethal hazards.",
     specs: [
@@ -415,7 +415,7 @@ export const humanityMissions = [
     number: "03 / GLOBAL WATER INNOVATION",
     title: "Solar Borehole & Smart Water Hubs",
     copy: "Off-grid Dual-Stream Solar Borehole Water Hubs combining deep well drilling, solar submersible pumps, multi-stage ultrafiltration, IoT water flow sensors, 24/7 smart prepaid dispensers and dry-season farm irrigation.",
-    image: "/assets/community-relief.png",
+    image: "/assets/solar-water-hub-hero.png",
     outcome:
       "Guarantee 24/7 safe drinking water during grid blackouts and typhoons while providing diesel-free groundwater irrigation for smallholder farmers.",
     specs: [
@@ -430,7 +430,7 @@ export const humanityMissions = [
     number: "04 / HUMAN-WILDLIFE COEXISTENCE",
     title: "Ecological & Watershed Monitoring",
     copy: "Non-invasive thermal mapping, estuarine crocodile habitat tracking, marine megafauna monitoring and hydrogeological watershed surveys for conservation scientists and rural municipalities.",
-    image: "/assets/hero-solutions-today.png",
+    image: "/assets/sovereign-ai-400b-core.png",
     outcome:
       "Protect both human lives and vulnerable marine/estuarine species through non-lethal early warning, habitat mapping and science-backed coexistence.",
     specs: [

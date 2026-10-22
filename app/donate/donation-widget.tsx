@@ -110,6 +110,8 @@ export function DonationSection({ compact = false }: { compact?: boolean }) {
   const [donorEmail, setDonorEmail] = useState<string>("");
   const [donorNote, setDonorNote] = useState<string>("");
   const [pledgeRef, setPledgeRef] = useState<string | null>(null);
+  const [supabaseSynced, setSupabaseSynced] = useState<boolean>(false);
+  const [submitting, setSubmitting] = useState<boolean>(false);
 
   const activeMission =
     MISSIONS.find((m) => m.id === selectedMissionId) ?? MISSIONS[0];
@@ -126,10 +128,39 @@ export function DonationSection({ compact = false }: { compact?: boolean }) {
       .find((t) => effectiveAmount >= t.amount) ??
     TIERS[0];
 
-  function handleRecordPledge(e: React.FormEvent) {
+  async function handleRecordPledge(e: React.FormEvent) {
     e.preventDefault();
-    const refCode = `366-HUM-${Math.floor(100000 + Math.random() * 900000)}`;
-    setPledgeRef(refCode);
+    setSubmitting(true);
+    try {
+      const res = await fetch("/api/donations", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          donorName,
+          donorEmail,
+          amountUsd: effectiveAmount,
+          frequency,
+          missionId: activeMission.id,
+          missionTitle: activeMission.title,
+          donorNote,
+        }),
+      });
+      const data = (await res.json()) as {
+        ok?: boolean;
+        pledgeRef?: string;
+        supabaseSynced?: boolean;
+      };
+      if (data.ok && data.pledgeRef) {
+        setPledgeRef(data.pledgeRef);
+        setSupabaseSynced(Boolean(data.supabaseSynced));
+      } else {
+        setPledgeRef(`366-HUM-${Math.floor(100000 + Math.random() * 900000)}`);
+      }
+    } catch {
+      setPledgeRef(`366-HUM-${Math.floor(100000 + Math.random() * 900000)}`);
+    } finally {
+      setSubmitting(false);
+    }
   }
 
   return (
@@ -319,13 +350,18 @@ export function DonationSection({ compact = false }: { compact?: boolean }) {
                 onChange={(e) => setDonorNote(e.target.value)}
                 className="donate-note-input"
               />
-              <button type="submit" className="donate-pledge-submit">
-                Generate Official Donation Pledge &amp; Receipt Reference →
+              <button type="submit" className="donate-pledge-submit" disabled={submitting}>
+                {submitting
+                  ? "Saving Pledge to Database…"
+                  : "Record Donation in Supabase & Generate Receipt Reference →"}
               </button>
 
               {pledgeRef && (
                 <div className="donate-pledge-confirmation" role="status">
-                  <div className="pledge-conf-badge">PLEDGE REGISTERED • REF #{pledgeRef}</div>
+                  <div className="pledge-conf-badge">
+                    PLEDGE REGISTERED • REF #{pledgeRef}{" "}
+                    {supabaseSynced ? "• SAVED TO SUPABASE DB" : "• LOGGED"}
+                  </div>
                   <h4>Thank you, {donorName || "Supporter"}!</h4>
                   <p>
                     Your <strong>${effectiveAmount.toLocaleString()} USD</strong> ({frequency}) pledge toward{" "}

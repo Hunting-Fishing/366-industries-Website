@@ -3,9 +3,45 @@ import { ArrowLink, Shell } from "./components";
 import { DonationSection } from "./donate/donation-widget";
 import { futureIdeas, ventures } from "./site-data";
 
+const heroShowcaseCards = [
+  {
+    code: "01 / GLOBAL CLEAN WATER",
+    title: "Solar Borehole & Smart Water Hubs",
+    subtitle: "Deep-aquifer solar wells, ultrafiltration + UV, IoT flow sensors & 24/7 RFID dispensers",
+    image: "/assets/solar-water-hub-hero.png",
+    href: "/water",
+    badge: "WASH & AG-TECH",
+  },
+  {
+    code: "02 / COASTAL SAFETY",
+    title: "Shark & Crocodile Drone Network",
+    subtitle: "Polarized optical, thermal IR & edge-AI coastal overwatch protecting beaches & estuaries",
+    image: "/assets/coastal-shark-croc-drone.png",
+    href: "/humanity/coastal-safety",
+    badge: "WILDGUARD COASTAL",
+  },
+  {
+    code: "03 / DISASTER RESCUE",
+    title: "Typhoon & Flood Rescue UAVs",
+    subtitle: "Thermal survivor detection, medical/water payload drops & GPS self-inflating rescue rafts",
+    image: "/assets/disaster-rescue-drone.png",
+    href: "/humanity/disaster-response-drones",
+    badge: "EMERGENCY SAR",
+  },
+  {
+    code: "04 / 366 AI PROGRAM",
+    title: "366 AI Designer & 400B+ Core",
+    subtitle: "Guided AI software creation workspace backed by sovereign 400B+ local AI compute",
+    image: "/assets/sovereign-ai-400b-core.png",
+    href: "/ai-designer",
+    badge: "ONLINE BUILDER",
+  },
+];
+
 const humanitarianAllocations = [
   {
     percent: "40%",
+    width: "40%",
     tag: "PILLAR 01 • CLEAN WATER & WASH",
     title: "Global Clean Water & Solar Borehole Hubs",
     copy: "Website and commercial platform funds directly co-finance deep-aquifer borehole drilling, 100% off-grid solar submersible pumps, multi-stage ultrafiltration + UV treatment, inline IoT water flow sensors, 24/7 RFID smart prepaid dispensers and dry-season farm irrigation.",
@@ -14,6 +50,7 @@ const humanitarianAllocations = [
   },
   {
     percent: "25%",
+    width: "25%",
     tag: "PILLAR 02 • COASTAL PREDATOR OVERWATCH",
     title: "Shark & Crocodile Drone Protection Network",
     copy: "Funds solar-charged coastal UAV stations equipped with polarized optical cameras, thermal infrared sensors and edge-AI computer vision to detect sharks, saltwater crocodiles and rip currents along beaches, river mouths and fishing coastlines—alerting swimmers and lifeguards in real time.",
@@ -22,6 +59,7 @@ const humanitarianAllocations = [
   },
   {
     percent: "20%",
+    width: "20%",
     tag: "PILLAR 03 • DISASTER SEARCH & RESCUE",
     title: "Typhoon, Flood & Emergency Rescue Operations",
     copy: "Supports rapid-deployment thermal reconnaissance and heavy-payload delivery drones that locate stranded families and drop emergency drinking water, trauma medicine, satellite radios and GPS-tracked self-inflating rescue rafts when storms sever roads.",
@@ -30,6 +68,7 @@ const humanitarianAllocations = [
   },
   {
     percent: "15%",
+    width: "15%",
     tag: "PILLAR 04 • LOCAL GOVERNANCE & TRAINING",
     title: "Community Technicians & Lifeguard Readiness",
     copy: "Builds ring-fenced local maintenance reserves and trains Barangay Water Associations, municipal lifeguards and licensed local drone responders across the Philippines, North America and developing coastlines worldwide.",
@@ -42,26 +81,34 @@ const globalGrantCategories = [
   {
     code: "GRANT TRACK 01",
     title: "Global Clean Water (WASH) & Climate-Smart Agriculture",
-    targets: "Global Innovation Fund ($220K) • D-Prize ($20K) • Rotary Foundation Global WASH ($30K–$400K) • Grand Challenges Canada • FIT",
-    scope: "Funds off-grid Solar Borehole Water Hubs, ultrafiltration, IoT water flow telemetry, 24/7 smart prepaid dispensers and smallholder farm irrigation.",
+    targets:
+      "Global Innovation Fund ($220K) • D-Prize ($20K) • Rotary Foundation Global WASH ($30K–$400K) • Grand Challenges Canada • FIT",
+    scope:
+      "Funds off-grid Solar Borehole Water Hubs, ultrafiltration, IoT water flow telemetry, 24/7 smart prepaid dispensers and smallholder farm irrigation.",
   },
   {
     code: "GRANT TRACK 02",
     title: "Coastal Safety, Shark & Crocodile Mitigation & Marine Innovation",
-    targets: "Coastal Lifesaving & Beach Safety Funds • Indo-Pacific Estuarine & Marine Safety Grants • Non-Lethal Wildlife Coexistence Programs",
-    scope: "Funds AI-assisted coastal drone patrols, polarized/thermal shark & crocodile detection, automated beach warning systems and drop-deployed flotation pods.",
+    targets:
+      "Coastal Lifesaving & Beach Safety Funds • Indo-Pacific Estuarine & Marine Safety Grants • Non-Lethal Wildlife Coexistence Programs",
+    scope:
+      "Funds AI-assisted coastal drone patrols, polarized/thermal shark & crocodile detection, automated beach warning systems and drop-deployed flotation pods.",
   },
   {
     code: "GRANT TRACK 03",
     title: "Disaster Risk Reduction (DRRM) & Search-and-Rescue UAVs",
-    targets: "Humanitarian Grand Challenge ($250K) • DOST-DRRM / GIA • UN/WFP Innovation • Municipal 5% Calamity (LDRRMF) Joint Ventures",
-    scope: "Funds all-weather thermal search-and-rescue drones, heavy-lift medical/water payload delivery, GPS inflatable rescue rafts and mobile command trailers.",
+    targets:
+      "Humanitarian Grand Challenge ($250K) • DOST-DRRM / GIA • UN/WFP Innovation • Municipal 5% Calamity (LDRRMF) Joint Ventures",
+    scope:
+      "Funds all-weather thermal search-and-rescue drones, heavy-lift medical/water payload delivery, GPS inflatable rescue rafts and mobile command trailers.",
   },
   {
     code: "GRANT TRACK 04",
     title: "Sovereign 400B+ AI Compute, Clean Energy & Deep-Tech R&D",
-    targets: "NRC IRAP Canada • SR&ED • DOST-PCIEERD Equipment Outlay (₱5M) • IEEE Smart Village ($100K) • UNDP-GEF Small Grants",
-    scope: "Funds our 400B+ parameter local AI workstation/server cluster (powering 366 AI Designer & offline drone CV), community solar microgrids and 4x4 field trucks.",
+    targets:
+      "NRC IRAP Canada • SR&ED • DOST-PCIEERD Equipment Outlay (₱5M) • IEEE Smart Village ($100K) • UNDP-GEF Small Grants",
+    scope:
+      "Funds our 400B+ parameter local AI workstation/server cluster (powering 366 AI Designer & offline drone CV), community solar microgrids and 4x4 field trucks.",
   },
 ];
 
@@ -74,50 +121,57 @@ export default function Home() {
 
   return (
     <Shell>
-      {/* HERO SECTION */}
-      <section className="home-hero">
-        <div className="hero-image" aria-hidden="true" />
-        <div className="hero-copy">
-          <div className="hero-kicker">
-            GLOBAL HUMANITARIAN &amp; CLEAN-TECH ENGINEERING • <strong>CANADA • PHILIPPINES • USA</strong>
-          </div>
-          <h1>
-            Clean water.<br />
-            Coastal safety.<br />
-            <em>Built to save lives.</em>
-          </h1>
-          <p>
-            <strong>366 Industries</strong> and <strong>1st Defence Industries</strong> engineer practical humanitarian infrastructure worldwide—combining off-grid <strong>Solar Borehole &amp; Smart Water Hubs</strong>, our <strong>WildGuard Coastal Drone Protection Network</strong> where sharks and saltwater crocodiles roam, <strong>Rapid Disaster Search-and-Rescue UAVs</strong>, and our flagship <strong>366 AI Program</strong>.
-          </p>
-          <div className="actions">
-            <ArrowLink href="/water">Global Water Innovation</ArrowLink>
-            <ArrowLink href="/humanity" secondary>
-              Shark, Crocodile &amp; Rescue Drones
-            </ArrowLink>
-            <ArrowLink href="/donate" secondary>
-              ❤ Donate Now
-            </ArrowLink>
-          </div>
-        </div>
+      {/* REDESIGNED MODERN SPLIT HERO */}
+      <section className="home-hero-modern">
+        <div className="hero-bg-backdrop" aria-hidden="true" />
+        <div className="hero-split-container">
+          <div className="hero-copy-modern">
+            <div className="hero-kicker">
+              GLOBAL HUMANITARIAN &amp; CLEAN-TECH INFRASTRUCTURE •{" "}
+              <strong>CANADA • PHILIPPINES • USA</strong>
+            </div>
+            <h1>
+              Clean water.<br />
+              Coastal safety.<br />
+              <em>Built to save lives.</em>
+            </h1>
+            <p className="hero-lead-modern">
+              <strong>366 Industries</strong> and <strong>1st Defence Industries</strong> engineer practical humanitarian systems worldwide—combining off-grid <strong>Solar Borehole &amp; Smart Water Hubs</strong>, our <strong>WildGuard Coastal Drone Protection Network</strong> where sharks and saltwater crocodiles roam, <strong>Rapid Disaster Search-and-Rescue UAVs</strong>, and our flagship <strong>366 AI Designer Program</strong>.
+            </p>
+            <div className="actions">
+              <ArrowLink href="/water">Global Water Innovation</ArrowLink>
+              <ArrowLink href="/humanity" secondary>
+                Shark, Crocodile &amp; Rescue Drones
+              </ArrowLink>
+              <ArrowLink href="/donate" secondary>
+                ❤ Donate Now
+              </ArrowLink>
+            </div>
 
-        <div className="hero-index">
-          <span>CLEAN WATER • COASTAL DRONES • DISASTER RESCUE • 366 AI</span>
-          <i />
-        </div>
+            <div className="hero-trust-pills">
+              <span>✓ Ring-Fenced Humanitarian Website Funds</span>
+              <span>✓ 24/7 IoT Water &amp; Drone Telemetry</span>
+              <span>✓ Global Grant &amp; Audit Ready</span>
+            </div>
+          </div>
 
-        <div className="hero-rail">
-          {[
-            ["01 / CLEAN WATER", "Solar Borehole & Water Hubs", "/water"],
-            ["02 / COASTAL & RESCUE", "Shark, Croc & Disaster Drones", "/humanity"],
-            ["03 / GLOBAL GRANTS", "Institutional Audit & Dossier", "/grants"],
-            ["04 / 366 AI PROGRAM", "366 AI Designer & 400B+ Core", "/ai-designer"],
-          ].map(([n, label, href]) => (
-            <Link href={href} key={href}>
-              <small>{n}</small>
-              <strong>{label}</strong>
-              <span>→</span>
-            </Link>
-          ))}
+          <div className="hero-visual-grid">
+            {heroShowcaseCards.map((card) => (
+              <Link href={card.href} key={card.code} className="hero-showcase-card">
+                <div
+                  className="hero-showcase-img"
+                  style={{ backgroundImage: `url('${card.image}')` }}
+                >
+                  <span className="hero-showcase-badge">{card.badge}</span>
+                </div>
+                <div className="hero-showcase-content">
+                  <small>{card.code}</small>
+                  <strong>{card.title}</strong>
+                  <p>{card.subtitle}</p>
+                </div>
+              </Link>
+            ))}
+          </div>
         </div>
       </section>
 
@@ -155,14 +209,14 @@ export default function Home() {
             <h2>How our website &amp; commercial funds power global humanitarian action.</h2>
           </div>
           <p>
-            Unlike traditional charities that rely solely on one-time donations, <strong>366 Industries</strong> and <strong>1st Defence Industries</strong> operate a <strong>Dual-Engine Humanitarian Model</strong>: revenues from our software (<strong>366 AI Designer</strong>), commercial marketplaces and games are pooled with international grants into a <strong>Ring-Fenced Humanitarian Impact Reserve</strong>.
+            Unlike traditional charities that rely solely on one-time donations, <strong>366 Industries</strong> and <strong>1st Defence Industries</strong> operate a <strong>Dual-Engine Humanitarian Model</strong>: revenues from our software (<strong>366 AI Designer</strong>), commercial marketplaces and games are pooled with public donations and international grants into a <strong>Ring-Fenced Humanitarian Impact Reserve</strong>.
           </p>
         </div>
 
         <div className="pledge-banner-card">
           <div className="pledge-banner-left">
             <span className="pledge-pill">AUDITED HUMANITARIAN FUND ALLOCATION</span>
-            <h3>Every commercial venture &amp; grant dollar strengthens frontline community survival.</h3>
+            <h3>Every commercial venture, donation &amp; grant dollar strengthens frontline community survival.</h3>
             <p>
               Our website funds, platform subscriptions, marketplace fees and non-dilutive institutional grants are structured with transparent accounting to deploy permanent clean water infrastructure, coastal predator protection and emergency disaster rescues across the Philippines and underserved regions globally.
             </p>
@@ -186,6 +240,9 @@ export default function Home() {
                 <span className="allocation-tag">{item.tag}</span>
                 <strong className="allocation-percent">{item.percent}</strong>
               </div>
+              <div className="allocation-progress-track" aria-hidden="true">
+                <div className="allocation-progress-fill" style={{ width: item.width }} />
+              </div>
               <h3>{item.title}</h3>
               <p>{item.copy}</p>
               <Link href={item.href} className="allocation-link">
@@ -195,9 +252,6 @@ export default function Home() {
           ))}
         </div>
       </section>
-
-      {/* DIRECT DONATIONS SECTION ON HOMEPAGE */}
-      <DonationSection compact />
 
       {/* SECTION 2: THREE CORE HUMANITARIAN & WATER INNOVATION OPERATIONS */}
       <section className="section core-missions-section">
@@ -215,7 +269,7 @@ export default function Home() {
           <article className="pillar-feature-card">
             <div
               className="pillar-feature-img"
-              style={{ backgroundImage: "url('/assets/community-relief.png')" }}
+              style={{ backgroundImage: "url('/assets/solar-water-hub-hero.png')" }}
             >
               <span className="pillar-badge">GLOBAL WATER INNOVATION</span>
             </div>
@@ -239,7 +293,7 @@ export default function Home() {
           <article className="pillar-feature-card">
             <div
               className="pillar-feature-img"
-              style={{ backgroundImage: "url('/assets/humanity-hero.png')" }}
+              style={{ backgroundImage: "url('/assets/coastal-shark-croc-drone.png')" }}
             >
               <span className="pillar-badge">COASTAL SHARK &amp; CROCODILE SAFETY</span>
             </div>
@@ -263,7 +317,7 @@ export default function Home() {
           <article className="pillar-feature-card">
             <div
               className="pillar-feature-img"
-              style={{ backgroundImage: "url('/assets/drone-guardian.png')" }}
+              style={{ backgroundImage: "url('/assets/disaster-rescue-drone.png')" }}
             >
               <span className="pillar-badge">EMERGENCY SEARCH &amp; RESCUE</span>
             </div>
@@ -285,6 +339,9 @@ export default function Home() {
           </article>
         </div>
       </section>
+
+      {/* DIRECT DONATIONS SECTION ON HOMEPAGE */}
+      <DonationSection compact />
 
       {/* SECTION 3: DEDICATED 366 AI PROGRAM SPOTLIGHT (CLEANLY SEPARATED) */}
       <section className="section ai-spotlight-section">
@@ -317,20 +374,26 @@ export default function Home() {
           </div>
 
           <div className="ai-spotlight-cards">
+            <div
+              className="ai-spotlight-visual-frame"
+              style={{ backgroundImage: "url('/assets/sovereign-ai-400b-core.png')" }}
+              aria-label="366 AI Designer and 400B+ Sovereign AI Compute Center"
+            >
+              <span>SOVEREIGN 400B+ AI &amp; TELEMETRY CORE</span>
+            </div>
             <div className="ai-mini-card">
               <span>01 / PRODUCT BUILDER</span>
               <h4>366 AI Designer Workspace</h4>
-              <p>Move from plain-language concept to a structured, visual and deployable web application at designer.366industries.com.</p>
+              <p>
+                Move from plain-language concept to a structured, visual and deployable web application at designer.366industries.com.
+              </p>
             </div>
             <div className="ai-mini-card">
-              <span>02 / SOVEREIGN 400B+ AI</span>
-              <h4>High-VRAM Local AI Node</h4>
-              <p>On-premise multi-GPU architecture engineered to execute 400B+ parameter reasoning, coding &amp; multimodal vision models locally.</p>
-            </div>
-            <div className="ai-mini-card">
-              <span>03 / HUMANITARIAN CV &amp; TELEMETRY</span>
+              <span>02 / HUMANITARIAN CV &amp; TELEMETRY</span>
               <h4>Offline Coastal &amp; Disaster AI</h4>
-              <p>Powers real-time shark/crocodile aerial detection, flood survivor thermal recognition and predictive borehole pump diagnostics.</p>
+              <p>
+                Powers real-time shark/crocodile aerial detection, flood survivor thermal recognition and predictive borehole pump diagnostics.
+              </p>
             </div>
           </div>
         </div>
@@ -363,8 +426,12 @@ export default function Home() {
 
         <div className="grant-cta-strip">
           <div>
-            <strong>Review our complete $385,000 USD Multi-Grant Capital, Water, Drone, Clean Energy &amp; 400B+ AI Dossier</strong>
-            <span>Includes line-item equipment specifications, UN SDG alignment, and tri-national corporate verification.</span>
+            <strong>
+              Review our complete $385,000 USD Multi-Grant Capital, Water, Drone, Clean Energy &amp; 400B+ AI Dossier
+            </strong>
+            <span>
+              Includes line-item equipment specifications, UN SDG alignment, and tri-national corporate verification.
+            </span>
           </div>
           <div className="actions" style={{ marginTop: 0 }}>
             <ArrowLink href="/grants">Open Full Global Grant Dossier</ArrowLink>
@@ -387,8 +454,12 @@ export default function Home() {
         {/* DIVISION GROUP 1: HUMANITARIAN & WATER */}
         <div className="division-group">
           <div className="division-group-header">
-            <span className="division-pill humanitarian">DIVISION I • HUMANITARIAN, CLEAN WATER &amp; COASTAL DRONE SAFETY</span>
-            <p>Frontline physical infrastructure funded by institutional grants, community campaigns and ring-fenced platform revenues.</p>
+            <span className="division-pill humanitarian">
+              DIVISION I • HUMANITARIAN, CLEAN WATER &amp; COASTAL DRONE SAFETY
+            </span>
+            <p>
+              Frontline physical infrastructure funded by institutional grants, community donations and ring-fenced platform revenues.
+            </p>
           </div>
           <div className="venture-list">
             {humanitarianVentures.map((v) => (
@@ -410,8 +481,12 @@ export default function Home() {
         {/* DIVISION GROUP 2: 366 AI PROGRAM */}
         <div className="division-group">
           <div className="division-group-header">
-            <span className="division-pill ai">DIVISION II • 366 AI PROGRAM &amp; SOVEREIGN 400B+ COMPUTE</span>
-            <p>Guided AI software creation workspace and high-VRAM local AI compute infrastructure.</p>
+            <span className="division-pill ai">
+              DIVISION II • 366 AI PROGRAM &amp; SOVEREIGN 400B+ COMPUTE
+            </span>
+            <p>
+              Guided AI software creation workspace and high-VRAM local AI compute infrastructure.
+            </p>
           </div>
           <div className="venture-list">
             {aiVentures.map((v) => (
@@ -433,8 +508,12 @@ export default function Home() {
         {/* DIVISION GROUP 3: COMMERCIAL VENTURES & GAMES (IMPACT ENGINE) */}
         <div className="division-group">
           <div className="division-group-header">
-            <span className="division-pill commercial">DIVISION III • COMMERCIAL MARKETPLACES, LIVELIHOODS &amp; PURPOSE-LED GAMES</span>
-            <p>Independent commercial platforms and interactive media that build local economic opportunity and generate sustainable funding for Division I.</p>
+            <span className="division-pill commercial">
+              DIVISION III • COMMERCIAL MARKETPLACES, LIVELIHOODS &amp; PURPOSE-LED GAMES
+            </span>
+            <p>
+              Independent commercial platforms and interactive media that build local economic opportunity and generate sustainable funding for Division I.
+            </p>
           </div>
           <div className="venture-list">
             {commercialAndGamesVentures.slice(0, 5).map((v) => (
@@ -493,18 +572,20 @@ export default function Home() {
           <i />
           <i />
         </div>
-        <div className="section-label">Global Water Innovation • Shark &amp; Crocodile Drone Safety • Disaster Rescue</div>
+        <div className="section-label">
+          Global Water Innovation • Shark &amp; Crocodile Drone Safety • Disaster Rescue
+        </div>
         <h2>Partner with a builder that executes on the ground and along the coast.</h2>
         <p>
           366 Industries and 1st Defence Industries connect engineers, coastal municipalities, rural barangays, smallholder farmers, universities and international grantmakers across borders.
         </p>
         <div className="actions">
-          <ArrowLink href="/grants">View Global Grant &amp; Audit Dossier</ArrowLink>
-          <ArrowLink href="/water" secondary>
-            Explore Solar Water Hubs
+          <ArrowLink href="/donate">❤ Donate to Frontline Missions</ArrowLink>
+          <ArrowLink href="/grants" secondary>
+            View Global Grant &amp; Audit Dossier
           </ArrowLink>
-          <ArrowLink href="/humanity" secondary>
-            Explore Coastal &amp; Rescue Drones
+          <ArrowLink href="/login" secondary>
+            Member &amp; Donor Sign In
           </ArrowLink>
         </div>
       </section>

@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 
 export function AdminLoginForm() {
   const router = useRouter();
+  const [email, setEmail] = useState("Jordilwbailey@gmail.com");
   const [error, setError] = useState("");
   const [busy, setBusy] = useState(false);
 
@@ -12,34 +13,77 @@ export function AdminLoginForm() {
     event.preventDefault();
     setBusy(true);
     setError("");
+    const formData = new FormData(event.currentTarget);
     const response = await fetch("/api/admin/login", {
       method: "POST",
-      body: new FormData(event.currentTarget),
+      body: formData,
     });
-    const result = (await response.json()) as { ok: boolean; message?: string };
-    if (!response.ok) {
+    const result = (await response.json()) as {
+      ok: boolean;
+      message?: string;
+      user?: {
+        name: string;
+        email: string;
+        role: string;
+        accountType: string;
+        region: string;
+      };
+    };
+    if (!response.ok || !result.ok) {
       setError(result.message ?? "Unable to sign in.");
       setBusy(false);
       return;
     }
+
+    if (result.user) {
+      try {
+        localStorage.setItem(
+          "366_member_session",
+          JSON.stringify({
+            ...result.user,
+            supabaseSynced: true,
+            createdAt: new Date().toISOString(),
+          })
+        );
+        window.dispatchEvent(new Event("366-auth-changed"));
+      } catch {
+        // ignore
+      }
+    }
+
     router.refresh();
   }
 
   return (
     <form className="admin-login-form" onSubmit={submit}>
-      <label htmlFor="admin-password">Admin access password</label>
+      <label htmlFor="admin-email">Admin email address</label>
+      <input
+        id="admin-email"
+        name="email"
+        type="email"
+        value={email}
+        onChange={(e) => setEmail(e.target.value)}
+        autoComplete="email"
+        required
+      />
+      <label htmlFor="admin-password">Admin password</label>
       <input
         id="admin-password"
         name="password"
         type="password"
-        inputMode="numeric"
         autoComplete="current-password"
+        placeholder="Enter your admin password"
         required
         autoFocus
       />
-      {error && <p className="form-error" role="alert">{error}</p>}
+      {error && (
+        <p className="form-error" role="alert">
+          {error}
+        </p>
+      )}
       <button className="button" type="submit" disabled={busy}>
-        {busy ? "Checking…" : "Enter admin portal"} <span>→</span>
+        {busy ? "Authenticating Admin…" : "Enter Admin & Users Control Room"}{" "}
+        <span>→</span>
       </button>
     </form>
   );

@@ -151,7 +151,7 @@ export default function GrantsPage() {
     <Shell>
       <section
         className="pipe-hero"
-        style={{ backgroundImage: "url('/assets/hero-solutions-today.png')" }}
+        style={{ backgroundImage: "url('/assets/sovereign-ai-400b-core.png')" }}
       >
         <div className="pipe-hero-shade" />
         <div className="pipe-hero-copy">

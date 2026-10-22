@@ -34,7 +34,7 @@ export default function DonatePage() {
   return (
     <Shell>
       <PageHero
-        image="/assets/community-relief.png"
+        image="/assets/solar-water-hub-hero.png"
         eyebrow="366 Humanitarian & Clean-Tech Donations"
         title="Fund clean water. Protect coastlines. Save lives in disasters."
       >

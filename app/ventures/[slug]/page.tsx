@@ -134,7 +134,7 @@ export function SolarWaterHubsPage() {
     <Shell>
       <section
         className="pipe-hero"
-        style={{ backgroundImage: "url('/assets/community-relief.png')" }}
+        style={{ backgroundImage: "url('/assets/solar-water-hub-hero.png')" }}
       >
         <div className="pipe-hero-shade" />
         <div className="pipe-hero-copy">

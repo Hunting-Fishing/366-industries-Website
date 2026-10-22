@@ -8,6 +8,7 @@ import type { ReactNode } from "react";
 export function Header() {
   const [open, setOpen] = useState(false);
   const [memberName, setMemberName] = useState<string | null>(null);
+  const [isAdminUser, setIsAdminUser] = useState<boolean>(false);
   const pathname = usePathname();
 
   useEffect(() => {
@@ -15,13 +16,23 @@ export function Header() {
       try {
         const raw = localStorage.getItem("366_member_session");
         if (raw) {
-          const parsed = JSON.parse(raw) as { name?: string };
+          const parsed = JSON.parse(raw) as {
+            name?: string;
+            email?: string;
+            role?: string;
+          };
           setMemberName(parsed.name || "Member");
+          setIsAdminUser(
+            parsed.role === "admin" ||
+              parsed.email?.trim().toLowerCase() === "jordilwbailey@gmail.com"
+          );
         } else {
           setMemberName(null);
+          setIsAdminUser(false);
         }
       } catch {
         setMemberName(null);
+        setIsAdminUser(false);
       }
     }
     syncAuth();
@@ -106,6 +117,15 @@ export function Header() {
             );
           })}
           <div className="nav-auth-group">
+            {isAdminUser && (
+              <Link
+                href="/admin"
+                className="nav-auth-btn signup"
+                onClick={() => setOpen(false)}
+              >
+                ★ Admin Control
+              </Link>
+            )}
             <Link
               href="/login"
               className="nav-auth-btn"

@@ -122,24 +122,64 @@ export function AuthPortal({ initialMode }: { initialMode: "login" | "signup" })
   }
 
   if (user) {
+    const isAdmin =
+      user.role === "admin" ||
+      user.email.trim().toLowerCase() === "jordilwbailey@gmail.com";
+
     return (
       <section className="section auth-section">
         <div className="member-dashboard-card">
           <div className="member-dashboard-header">
             <div>
-              <span className="pledge-pill">AUTHENTICATED 366 ACCOUNT ACTIVE</span>
+              <span className="pledge-pill">
+                {isAdmin
+                  ? "★ ROOT SUPER ADMIN SESSION ACTIVE (JORDILWBAILEY@GMAIL.COM)"
+                  : "AUTHENTICATED 366 ACCOUNT ACTIVE"}
+              </span>
               <h2>Welcome, {user.name}</h2>
               <p>
                 Signed in as <strong>{user.email}</strong> • Role:{" "}
-                <strong>{user.accountType}</strong> • Region: <strong>{user.region}</strong>
+                <strong>{isAdmin ? "SUPER ADMIN" : user.accountType}</strong> •
+                Region: <strong>{user.region}</strong>
               </p>
             </div>
-            <button type="button" className="button secondary" onClick={handleSignOut}>
-              Sign Out
-            </button>
+            <div style={{ display: "flex", gap: "10px", flexWrap: "wrap" }}>
+              {isAdmin && (
+                <Link href="/admin" className="button">
+                  ★ Open Admin &amp; Users Control Room <span>↗</span>
+                </Link>
+              )}
+              <button
+                type="button"
+                className="button secondary"
+                onClick={handleSignOut}
+              >
+                Sign Out
+              </button>
+            </div>
           </div>
 
           <div className="member-portal-grid">
+            {isAdmin && (
+              <article
+                className="member-portal-tile"
+                style={{
+                  gridColumn: "1 / -1",
+                  borderColor: "var(--orange)",
+                  background:
+                    "linear-gradient(135deg, rgba(249, 115, 22, 0.16), rgba(14, 30, 48, 0.9))",
+                }}
+              >
+                <span>00 / ROOT SUPER ADMIN CONTROL (JORDILWBAILEY@GMAIL.COM)</span>
+                <h3>Admin &amp; Users Control Room</h3>
+                <p>
+                  Manage all registered website users, promote/demote administrators, suspend accounts, and inspect the live Supabase Humanitarian Donations &amp; Pledges ledger.
+                </p>
+                <Link href="/admin" className="button">
+                  Enter Admin &amp; Users Control Room (/admin) <span>→</span>
+                </Link>
+              </article>
+            )}
             <article className="member-portal-tile">
               <span>01 / HUMANITARIAN &amp; DONATIONS</span>
               <h3>Support Clean Water &amp; Coastal Drones</h3>

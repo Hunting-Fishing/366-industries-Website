@@ -1881,3 +1881,353 @@
     align-items: stretch;
   }
 }
+
+
+/* =========================================================================
+   COMPLETE VISUAL REDESIGN: MODERN CLEAN-TECH & HUMANITARIAN UI ARCHITECTURE
+   ========================================================================= */
+
+:root {
+  --void: #050c14;
+  --ink: #081320;
+  --steel: #0e1e30;
+  --steel-light: #152b42;
+  --ivory: #f8fafc;
+  --stone: #94a3b8;
+  --orange: #f97316;
+  --teal: #0ea5e9;
+  --teal-bright: #2dd4bf;
+  --rule: rgba(148, 163, 184, 0.16);
+  --rule-strong: rgba(148, 163, 184, 0.28);
+}
+
+body {
+  background: var(--void);
+  color: var(--ivory);
+  line-height: 1.6;
+}
+
+/* Modern Rounded Buttons & Pills */
+.button,
+.nav .nav-launch,
+.charter-btn,
+.nav-auth-btn {
+  border-radius: 8px;
+}
+
+.button {
+  min-height: 50px;
+  padding: 0 22px;
+  gap: 16px;
+  font-size: 14px;
+  letter-spacing: 0.02em;
+  box-shadow: 0 8px 24px rgba(249, 115, 22, 0.24);
+}
+
+.button.secondary {
+  box-shadow: none;
+  background: rgba(14, 30, 48, 0.65);
+  border-color: var(--rule-strong);
+}
+
+.button.secondary:hover {
+  background: rgba(45, 212, 191, 0.14);
+  border-color: var(--teal-bright);
+  color: #fff;
+}
+
+.utility-pill,
+.pledge-pill,
+.pillar-badge,
+.sdg-code,
+.division-pill {
+  border-radius: 6px;
+}
+
+/* Redesigned Split Hero (Zero Overlap, Visual Showcase Grid) */
+.home-hero-modern {
+  position: relative;
+  padding: clamp(48px, 6vw, 84px) clamp(24px, 5vw, 88px);
+  border-bottom: 1px solid var(--rule);
+  overflow: hidden;
+  background: radial-gradient(circle at 18% 20%, rgba(14, 165, 233, 0.16), transparent 42%),
+    radial-gradient(circle at 85% 75%, rgba(249, 115, 22, 0.14), transparent 42%),
+    linear-gradient(180deg, #050c14 0%, #091624 100%);
+}
+
+.hero-bg-backdrop {
+  position: absolute;
+  inset: 0;
+  opacity: 0.18;
+  background-image: linear-gradient(rgba(45, 212, 191, 0.14) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(45, 212, 191, 0.14) 1px, transparent 1px);
+  background-size: 48px 48px;
+  mask-image: radial-gradient(circle at center, black 35%, transparent 85%);
+  pointer-events: none;
+}
+
+.hero-split-container {
+  position: relative;
+  z-index: 2;
+  display: grid;
+  grid-template-columns: 1.05fr 1.15fr;
+  gap: clamp(32px, 4vw, 60px);
+  align-items: center;
+  max-width: 1480px;
+  margin: 0 auto;
+}
+
+.hero-copy-modern h1 {
+  font-family: var(--font-display), sans-serif;
+  font-size: clamp(48px, 5.2vw, 82px);
+  line-height: 0.94;
+  text-transform: uppercase;
+  letter-spacing: -0.025em;
+  margin: 0 0 22px;
+}
+
+.hero-copy-modern h1 em {
+  font-style: normal;
+  background: linear-gradient(90deg, #f97316, #fb923c, #2dd4bf);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.hero-lead-modern {
+  font-size: clamp(16px, 1.25vw, 18.5px);
+  line-height: 1.7;
+  color: #cbd5e1;
+  margin: 0 0 28px;
+  max-width: 620px;
+}
+
+.hero-trust-pills {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-top: 28px;
+  padding-top: 22px;
+  border-top: 1px solid var(--rule);
+}
+
+.hero-trust-pills span {
+  font-family: var(--font-geist-mono), monospace;
+  font-size: 11px;
+  color: var(--teal-bright);
+  padding: 6px 12px;
+  border-radius: 6px;
+  background: rgba(14, 30, 48, 0.75);
+  border: 1px solid rgba(45, 212, 191, 0.25);
+}
+
+.hero-visual-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+}
+
+.hero-showcase-card {
+  border-radius: 14px;
+  border: 1px solid var(--rule-strong);
+  background: linear-gradient(160deg, rgba(16, 33, 52, 0.92), rgba(7, 15, 26, 0.96));
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  box-shadow: 0 18px 42px rgba(0, 0, 0, 0.38);
+  transition: transform 0.25s ease, border-color 0.25s ease, box-shadow 0.25s ease;
+}
+
+.hero-showcase-card:hover {
+  transform: translateY(-5px);
+  border-color: var(--teal-bright);
+  box-shadow: 0 24px 54px rgba(14, 165, 233, 0.2);
+}
+
+.hero-showcase-img {
+  height: 165px;
+  background-size: cover;
+  background-position: center;
+  position: relative;
+  display: flex;
+  align-items: flex-start;
+  justify-content: flex-end;
+  padding: 12px;
+  border-bottom: 1px solid var(--rule);
+}
+
+.hero-showcase-img::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(0deg, rgba(5, 12, 20, 0.75) 0%, transparent 55%);
+}
+
+.hero-showcase-badge {
+  position: relative;
+  z-index: 2;
+  padding: 4px 9px;
+  border-radius: 5px;
+  background: rgba(5, 12, 20, 0.86);
+  border: 1px solid rgba(45, 212, 191, 0.5);
+  color: var(--teal-bright);
+  font-family: var(--font-geist-mono), monospace;
+  font-size: 9px;
+  letter-spacing: 0.12em;
+}
+
+.hero-showcase-content {
+  padding: 16px 18px 18px;
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+.hero-showcase-content small {
+  font-family: var(--font-geist-mono), monospace;
+  font-size: 10px;
+  color: var(--orange);
+  letter-spacing: 0.12em;
+}
+
+.hero-showcase-content strong {
+  font-family: var(--font-display), sans-serif;
+  font-size: 22px;
+  line-height: 1.05;
+  text-transform: uppercase;
+  color: var(--ivory);
+}
+
+.hero-showcase-content p {
+  margin: 0;
+  font-size: 12.5px;
+  line-height: 1.45;
+  color: var(--stone);
+}
+
+/* Modernized Cards & Progress Bars Across All Pages */
+.allocation-card,
+.pillar-feature-card,
+.grant-track-card,
+.sdg-card,
+.donate-builder-card,
+.donate-sidebar-card,
+.auth-card,
+.member-dashboard-card,
+.member-portal-tile,
+.portfolio-card,
+.mission-card,
+.pipe-feature-grid article,
+.pipe-roadmap-grid article,
+.idea-grid article,
+.project-pillars article,
+.pledge-banner-card,
+.ai-spotlight-box,
+.ai-mini-card,
+.grant-cta-strip,
+.audit-table-wrap {
+  border-radius: 14px;
+}
+
+.allocation-progress-track {
+  width: 100%;
+  height: 6px;
+  border-radius: 999px;
+  background: rgba(148, 163, 184, 0.16);
+  overflow: hidden;
+  margin-bottom: 18px;
+}
+
+.allocation-progress-fill {
+  height: 100%;
+  border-radius: 999px;
+  background: linear-gradient(90deg, var(--orange), var(--teal-bright));
+}
+
+.ai-spotlight-visual-frame {
+  height: 220px;
+  border-radius: 12px;
+  border: 1px solid var(--rule-strong);
+  background-size: cover;
+  background-position: center;
+  position: relative;
+  display: flex;
+  align-items: flex-end;
+  padding: 16px;
+  overflow: hidden;
+}
+
+.ai-spotlight-visual-frame::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(0deg, rgba(5, 12, 20, 0.88) 0%, transparent 60%);
+}
+
+.ai-spotlight-visual-frame span {
+  position: relative;
+  z-index: 2;
+  font-family: var(--font-geist-mono), monospace;
+  font-size: 10px;
+  letter-spacing: 0.14em;
+  color: var(--teal-bright);
+  padding: 5px 10px;
+  border-radius: 5px;
+  background: rgba(5, 12, 20, 0.85);
+  border: 1px solid rgba(45, 212, 191, 0.4);
+}
+
+/* Fix Legacy Card Spacing so All Cards Are Balanced & Scannable */
+.pipe-feature-grid article,
+.pipe-roadmap-grid article,
+.idea-grid article,
+.project-pillars article {
+  min-height: auto;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  padding: 28px;
+  background: linear-gradient(155deg, rgba(14, 30, 48, 0.85), rgba(6, 13, 22, 0.95));
+}
+
+.pipe-feature-grid h3,
+.pipe-roadmap-grid h3,
+.idea-grid h3,
+.project-pillars h2 {
+  margin: 16px 0 12px !important;
+  font-size: 28px;
+  line-height: 1.06;
+}
+
+.mission-card {
+  min-height: 400px;
+}
+
+.mission-card h2 {
+  margin: 36px 0 14px;
+  font-size: 38px;
+}
+
+.page-hero,
+.pipe-hero {
+  min-height: 540px;
+  padding: 96px clamp(24px, 5vw, 88px) 72px;
+}
+
+.page-hero-image {
+  min-height: 560px;
+}
+
+@media (max-width: 1100px) {
+  .hero-split-container {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 650px) {
+  .hero-visual-grid {
+    grid-template-columns: 1fr;
+  }
+  .hero-showcase-img {
+    height: 190px;
+  }
+}

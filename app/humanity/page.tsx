@@ -59,7 +59,7 @@ export default function HumanityPage() {
   return (
     <Shell>
       <PageHero
-        image="/assets/humanity-hero.png"
+        image="/assets/coastal-shark-croc-drone.png"
         eyebrow="The 366 Humanitarian & WildGuard Initiative"
         title="Safe water. Safe coastlines. Rapid disaster rescue."
       >
