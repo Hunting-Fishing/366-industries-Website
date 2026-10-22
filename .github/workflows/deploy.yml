@@ -27,7 +27,7 @@ jobs:
       - name: Build and validate Worker artifact
         run: npm run build
       - name: Smoke-test rendered homepage
-        run: node --test tests/rendered-html.test.mjs
+        run: node --test tests/*.test.mjs
 
   deploy:
     if: github.event_name != 'pull_request'
