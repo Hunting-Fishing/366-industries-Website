@@ -32,18 +32,12 @@ export function AuthPortal({ initialMode }: { initialMode: "login" | "signup" })
   const [updatesOptIn, setUpdatesOptIn] = useState(true);
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState("");
+  const [notice, setNotice] = useState("");
   const [user, setUser] = useState<MemberSession | null>(null);
 
   useEffect(() => {
-    try {
-      const saved = localStorage.getItem("366_member_session");
-      if (saved) {
-        setUser(JSON.parse(saved) as MemberSession);
-      }
-    } catch {
-      // ignore storage errors
-    }
-
+    // Treat localStorage as presentation-only: the server-signed HttpOnly cookie
+    // determines whether a user is actually authenticated.
     fetch("/api/auth/session")
       .then((r) => r.json())
       .then((data: { authenticated?: boolean; user?: MemberSession | null }) => {
@@ -54,6 +48,9 @@ export function AuthPortal({ initialMode }: { initialMode: "login" | "signup" })
           } catch {
             // ignore
           }
+        } else {
+          setUser(null);
+          try { localStorage.removeItem("366_member_session"); } catch { /* ignore */ }
         }
       })
       .catch(() => {});
@@ -62,6 +59,7 @@ export function AuthPortal({ initialMode }: { initialMode: "login" | "signup" })
   async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
     setError("");
+    setNotice("");
 
     if (mode === "signup" && password !== confirmPassword) {
       setError("Passwords do not match. Please verify your password.");
@@ -86,8 +84,16 @@ export function AuthPortal({ initialMode }: { initialMode: "login" | "signup" })
       const data = (await res.json()) as {
         ok?: boolean;
         message?: string;
-        user?: MemberSession;
+        user?: MemberSession | null;
+        emailConfirmationRequired?: boolean;
       };
+      if (res.ok && data.ok && data.emailConfirmationRequired) {
+        setNotice(data.message || "Please verify your email before signing in.");
+        setPassword("");
+        setConfirmPassword("");
+        setBusy(false);
+        return;
+      }
       if (!res.ok || !data.ok || !data.user) {
         setError(data.message ?? "Unable to authenticate. Please check your details.");
         setBusy(false);
@@ -440,6 +446,9 @@ export function AuthPortal({ initialMode }: { initialMode: "login" | "signup" })
                 <p className="form-error" role="alert">
                   {error}
                 </p>
+              )}
+              {notice && (
+                <p role="status">{notice}</p>
               )}
 
               <button type="submit" className="button auth-submit-btn" disabled={busy}>
