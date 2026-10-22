@@ -20,25 +20,39 @@ This area is intentionally not linked in the public site navigation. Public cust
 
 Commerce tracker data is separate from existing website donations and member account data.
 
-## Critical database binding: use ONLY 366 Industries Supabase
+## Confirmed Supabase project: existing 366 Industries AI Platform database
 
-The connected Supabase tool currently shows **365 Motor Sales**, **Barangay Buddy**, and **366-AI-Software-Homebrew**, but does **not** show a project explicitly named **366 Industries / 366industries**. Those three are NOT interchangeable. No migration was run on them.
+The owner supplied the exact project URL `https://supabase.com/dashboard/project/ujkizgblscqcejghxemb`.
+The Supabase connector independently verified:
+- **Project ID/ref:** `ujkizgblscqcejghxemb`
+- **Dashboard project label:** `366-AI-Software-Homebrew`
+- **Organization:** `366 Industries AI Platform`
+- **API URL:** `https://ujkizgblscqcejghxemb.supabase.co`
 
-To prevent an accidental write to the wrong project, the Commerce OS now ignores generic `SUPABASE_URL` and `SUPABASE_SERVICE_ROLE_KEY`. Provision the following **private Cloudflare Worker runtime secrets** after verifying/connecting the actual 366 Industries project:
+This is the **confirmed selected database** for Jordi Shopify & Promotions, even though the dashboard project name is not literally `366industries`. Do not create a separate database or rename the existing Homebrew project as part of this feature.
 
-- `JORDI_SHOPIFY_SUPABASE_PROJECT_REF`: real 366 Industries Supabase project reference, e.g. the identifier in `https://<project-ref>.supabase.co`.
-- `JORDI_SHOPIFY_SUPABASE_URL`: must be **exactly** `https://<that-project-ref>.supabase.co`.
-- `JORDI_SHOPIFY_SUPABASE_SECRET_KEY`: server-side Supabase secret key (or legacy service-role JWT) for the verified project.
+### Implemented in the confirmed project
 
-Do not paste secret keys into GitHub source, user-facing content, chat, screenshots, or frontend env. The code validates the project reference against the URL and fails closed when the binding isn't explicitly set. Ensure the Supabase Data API exposes the public schema and that the secret key has service access.
+Applied in order through the authenticated Supabase connector:
+1. `jordi_shopify_commerce_core`, tracked in GitHub as `supabase/migrations/002_366_commerce_os.sql` — catalog, order summaries, webhook receipts and event auditing.
+2. `jordi_shopify_promotions_tracking`, tracked as `supabase/migrations/003_jordi_shopify_promotions_workspace.sql` — personal build and campaign trackers.
+3. `jordi_shopify_workspace_verified_platform_seed`, tracked as `supabase/migrations/004_jordi_workspace_verified_366_platform.sql` — descriptive table labels and initial owner-only work board.
 
-Apply migrations **in order to the correct 366 Industries database**:
-1. `supabase/migrations/002_366_commerce_os.sql` — products, orders, webhook receipts, agent events.
-2. `supabase/migrations/003_jordi_shopify_promotions_workspace.sql` — promotion tracking and personal build task tracking.
+The **six `public.commerce_*` tables** are a dedicated logical group within this existing Supabase project. Existing Homebrew builder tables were not modified. The `public` schema is intentional because the Next.js server accesses the Supabase Data API at `/rest/v1/<table>`.
 
-Do not blindly apply older `001_366_auth_and_donations.sql` to a database with existing auth/member tables; it contains broad pre-existing policies unrelated to this workspace. For any broader auth rework, review security separately.
+All six commerce tables have RLS enabled, no direct `anon` or `authenticated` SELECT privilege, and service-role SELECT privileges. The absence of RLS policies is intentional for these server-only tables. The Supabase security advisor may display an informational `rls_enabled_no_policy` result; see the security linter documentation before changing policies.
 
-Every new table enables RLS, revokes direct permissions from `anon` and `authenticated`, and grants the required access only to `service_role`. Only owner-verified Next.js server routes use the secret key. The schema currently uses dedicated `commerce_*` tables in the same verified database rather than exposing an unnecessary public schema.
+### Website runtime configuration — still required
+
+The server-side Commerce OS now pins the project ref and API URL to the confirmed values above, and refuses a mismatched target. To make the deployed website read and save these records, set a valid secret key from **this exact** Supabase project in the **Cloudflare Worker secret**:
+
+- `JORDI_SHOPIFY_SUPABASE_SECRET_KEY` — use a project secret/service-role key (server only).
+
+Optional explicit variables `JORDI_SHOPIFY_SUPABASE_PROJECT_REF` and `JORDI_SHOPIFY_SUPABASE_URL` may be set to the project ID and API URL above, but the code defaults to these exact verified public values. If the existing website already has both a generic service-role credential and a generic Supabase URL that **exactly** matches this project, the Commerce OS can safely reuse that key instead. It will not reuse a service credential associated with any other project.
+
+Never commit or expose a service-role/secret key to GitHub, client code, public documentation, screenshots, browser environment variables, or chat. Owner-only API routes use the existing HMAC-signed administrator session; no email-only authorization is allowed. Verify authorized reads/writes and public-user denial after the Cloudflare secret is configured.
+
+Do not apply the old `001_366_auth_and_donations.sql` migration to this project merely for Commerce OS. It is unrelated and its broad legacy policies require separate review.
 
 ## Shop connection (optional for idea and planning features)
 
@@ -55,8 +69,8 @@ As described in `docs/COMMERCE_OS.md`, Shopify actions require store credentials
 
 ## Suggested personal launch checklist
 
-- Connect the verified 366 Industries Supabase project.
-- Apply and test migrations 002 and 003 (with private RLS).
+- ✅ Database project `ujkizgblscqcejghxemb` selected; migrations 002, 003 and 004 applied and access privileges verified.
+- Configure Cloudflare server-only Supabase secret and test portal persistence end-to-end.
 - Create Shopify store, domain, merchant policies and checkout.
 - Select initial print-on-demand and dropshipping providers for global fulfillment.
 - Prototype and test color-vision apparel with real observers; verify print repeatability.
