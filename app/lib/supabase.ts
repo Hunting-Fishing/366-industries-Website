@@ -130,9 +130,8 @@ export async function supabaseSignUpUser(params: {
   error?: string;
 }> {
   const normalizedEmail = params.email.trim().toLowerCase();
-  const role: "admin" | "member" = isAdminEmail(normalizedEmail)
-    ? "admin"
-    : "member";
+  // New accounts cannot assign privileged roles to themselves.
+  const role: "admin" | "member" = "member";
 
   upsertFallbackUser({
     email: normalizedEmail,
@@ -146,7 +145,7 @@ export async function supabaseSignUpUser(params: {
 
   const config = getSupabaseConfig();
   if (!config) {
-    return { synced: false, role };
+    return { synced: false, role, error: "Account registration is temporarily unavailable." };
   }
 
   let authUserId: string | null = null;
@@ -254,9 +253,8 @@ export async function supabaseSignInUser(params: {
 }> {
   const normalizedEmail = params.email.trim().toLowerCase();
   const existingLocal = fallbackUsersStore.get(normalizedEmail);
-  const defaultRole: "admin" | "member" = isAdminEmail(normalizedEmail)
-    ? "admin"
-    : existingLocal?.role || "member";
+  // Local caches and user-supplied metadata must never determine authorization.
+  const defaultRole: "admin" | "member" = "member";
 
   upsertFallbackUser({
     email: normalizedEmail,
@@ -273,12 +271,7 @@ export async function supabaseSignInUser(params: {
     return {
       synced: false,
       role: defaultRole,
-      profile: {
-        name: existingLocal?.full_name || params.fallbackName,
-        role: defaultRole,
-        accountType: existingLocal?.account_type || params.fallbackAccountType,
-        region: existingLocal?.region || params.fallbackRegion,
-      },
+      error: "Account sign-in is temporarily unavailable.",
     };
   }
 
@@ -302,6 +295,8 @@ export async function supabaseSignInUser(params: {
       access_token?: string;
       user?: {
         id?: string;
+        email?: string;
+        email_confirmed_at?: string | null;
         user_metadata?: {
           full_name?: string;
           role?: "admin" | "member";
@@ -314,19 +309,6 @@ export async function supabaseSignInUser(params: {
     };
 
     if (!tokenRes.ok) {
-      // If root admin logs in before their Supabase Auth account is created, auto-provision or allow
-      if (isAdminEmail(normalizedEmail)) {
-        return {
-          synced: false,
-          role: "admin",
-          profile: {
-            name: "Jordi L. W. Bailey (Founder & Super Admin)",
-            role: "admin",
-            accountType: "Root Super Admin • 366 & 1st Defence Industries",
-            region: "Canada (BC) • Philippines (Ilocos Norte) • USA",
-          },
-        };
-      }
       return {
         synced: false,
         role: defaultRole,
@@ -337,12 +319,18 @@ export async function supabaseSignInUser(params: {
       };
     }
 
-    const authUserId = tokenJson.user?.id || null;
+    if (!tokenJson.access_token || !tokenJson.user?.id || tokenJson.user.email?.toLowerCase() !== normalizedEmail) {
+      return { synced: false, role: "member", error: "Unable to verify account identity." };
+    }
+    if (isAdminEmail(normalizedEmail) && !tokenJson.user.email_confirmed_at) {
+      return { synced: false, role: "member", error: "Administrator email must be verified first." };
+    }
+    const authUserId = tokenJson.user.id;
     const meta = tokenJson.user?.user_metadata || {};
     const resolvedName = meta.full_name || params.fallbackName;
     const resolvedRole: "admin" | "member" = isAdminEmail(normalizedEmail)
       ? "admin"
-      : meta.role || defaultRole;
+      : "member";
     const resolvedType = meta.account_type || params.fallbackAccountType;
     const resolvedRegion = meta.region || params.fallbackRegion;
 
