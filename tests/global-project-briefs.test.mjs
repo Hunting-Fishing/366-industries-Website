@@ -35,7 +35,7 @@ test("each project has accessible briefing panels with responsible funding discl
     source("app/project-brief-tabs.tsx"),
   ]);
   for (const project of ["water", "coastal", "rescue", "ai"]) {
-    assert.match(data, new RegExp(`\\b${project}: \\\\{`));
+    assert.ok(data.includes(`${project}: {`), `missing ${project} briefing`);
   }
   for (const panel of ["overview", "delivery", "funding", "evidence", "governance"]) {
     assert.match(data, new RegExp(`id: "${panel}"`));
