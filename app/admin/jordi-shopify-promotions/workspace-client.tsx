@@ -96,10 +96,7 @@ export function JordiWorkspaceTracker() {
   {data&&!data.configured&&<div style={{...card,background:"#35271b",borderColor:"#d6a354"}}>
    <strong>Database connection not yet configured</strong>
    <p style={{fontSize:13,lineHeight:1.7,marginBottom:0,color:"#ffe2af"}}>
-     To keep your private work in the correct database, saving remains disabled until the
-     <strong> 366 Industries Supabase</strong> project is explicitly linked using its project reference
-     and server credentials and migrations 002 and 003 are applied. This dashboard deliberately
-     does not use your other Supabase projects.
+     The project <strong>366-AI-Software-Homebrew</strong> (`ujkizgblscqcejghxemb`) is confirmed and the dedicated commerce tables are installed. Saving remains disabled until a server-side credential for that Supabase project is available to the Cloudflare Worker.
    </p>
   </div>}
   {error&&<div role="alert" style={{padding:13,borderRadius:10,background:"#5b1c31",color:"#fff"}}>{error}</div>}
