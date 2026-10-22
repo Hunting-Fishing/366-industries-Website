@@ -94,7 +94,7 @@ test("forged owner email cannot access Jordi personal tracking area", async () =
 test("anonymous visitors cannot open Jordi Shopify & Promotions page", async () => {
   const response=await request("/admin/jordi-shopify-promotions");
   assert.ok([302,303,307,308].includes(response.status));
-  assert.match(response.headers.get("location")||"","/admin");
+  assert.match(response.headers.get("location")||"", /\/admin(?:\?|$)/);
 });
 test("public writes cannot create promotions or personal tasks", async () => {
   const response=await worker.fetch(new Request("http://localhost/api/admin/jordi-workspace",{
