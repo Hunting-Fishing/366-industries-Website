@@ -33,17 +33,35 @@ export function contribution(p: CommerceProduct) {
   return Math.round(result * 100) / 100;
 }
 
+/** Verified by the owner from their Supabase project URL.
+ * The Supabase project is currently labeled "366-AI-Software-Homebrew",
+ * and belongs to the 366 Industries AI Platform organization.
+ * Pinning the project ensures commerce writes never reach 365 Motor Sales
+ * or another unrelated Supabase project.
+ */
+export const JORDI_COMMERCE_SUPABASE_REF = "ujkizgblscqcejghxemb";
+
 function dataConfig() {
-  // Explicit project binding prevents silently writing Jordi's business data
-  // into an unrelated 365 Motors / Homebrew / Barangay Supabase project.
-  const ref = process.env.JORDI_SHOPIFY_SUPABASE_PROJECT_REF || "";
-  const url = process.env.JORDI_SHOPIFY_SUPABASE_URL || "";
-  const key = process.env.JORDI_SHOPIFY_SUPABASE_SECRET_KEY || "";
-  if (!/^[a-z]{1,30}[a-z0-9]{5,30}$/.test(ref) ||
-      url.replace(/\/+$/, "") !== "https://" + ref + ".supabase.co" || !key) {
-    throw new Error("Jordi Commerce database is not configured. Set JORDI_SHOPIFY_SUPABASE_PROJECT_REF, JORDI_SHOPIFY_SUPABASE_URL and JORDI_SHOPIFY_SUPABASE_SECRET_KEY to the verified 366 Industries Supabase project.");
+  const expectedUrl = "https://" + JORDI_COMMERCE_SUPABASE_REF + ".supabase.co";
+  const ref = process.env.JORDI_SHOPIFY_SUPABASE_PROJECT_REF || JORDI_COMMERCE_SUPABASE_REF;
+  const explicitUrl = (process.env.JORDI_SHOPIFY_SUPABASE_URL || expectedUrl).replace(new RegExp("/+$"), "");
+  if (ref !== JORDI_COMMERCE_SUPABASE_REF || explicitUrl !== expectedUrl) {
+    throw new Error("Jordi Commerce Supabase project does not match the verified 366 Industries project.");
   }
-  return { url: url.replace(/\/+$/, ""), key };
+
+  // Reuse an existing website service-role credential ONLY when its associated
+  // URL exactly matches the owner's confirmed project. Otherwise the dedicated
+  // JORDI_SHOPIFY_SUPABASE_SECRET_KEY is mandatory.
+  const genericUrl = (process.env.SUPABASE_URL ||
+    process.env.NEXT_PUBLIC_SUPABASE_URL || "").replace(new RegExp("/+$"), "");
+  const sharedKey = genericUrl === expectedUrl
+    ? (process.env.SUPABASE_SERVICE_ROLE_KEY || process.env.SUPABASE_SECRET_KEY || "")
+    : "";
+  const key = process.env.JORDI_SHOPIFY_SUPABASE_SECRET_KEY || sharedKey;
+  if (!key) {
+    throw new Error("Jordi Commerce database needs JORDI_SHOPIFY_SUPABASE_SECRET_KEY configured as a server-side Worker secret.");
+  }
+  return { url: expectedUrl, key };
 }
 
 export function commerceDatabaseConfigured() {
