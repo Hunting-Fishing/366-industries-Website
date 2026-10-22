@@ -1,6 +1,7 @@
 -- 366 Industries owner-only Commerce OS.
--- Apply to the SAME Supabase project used by the website, then provision
--- server-side SUPABASE_SECRET_KEY / SUPABASE_SERVICE_ROLE_KEY.
+-- This migration has been applied to the owner-confirmed project
+-- ujkizgblscqcejghxemb (currently displayed as 366-AI-Software-Homebrew).
+-- Provision a dedicated server-only secret on the Cloudflare Worker.
 -- Never put secret or Shopify token in a NEXT_PUBLIC_* variable.
 -- Public or normal members have NO direct access to these tables.
 CREATE TABLE IF NOT EXISTS public.commerce_products (
