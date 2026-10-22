@@ -14,6 +14,8 @@ type Product = {
 type Snapshot = {
   ok:boolean; configured:boolean; products:Product[]; shopifyConfigured:boolean;
   aiConfigured:boolean; message?:string;
+  orders?:Array<{id:string;total:number;currency:string;financial_status:string;created_at:string}>;
+  events?:Array<{id:string;agent:string;action:string;result:string;created_at:string}>;
 };
 type Idea = { title:string; kind:Kind; theme:string; note:string };
 const ideas:Idea[] = [
@@ -123,6 +125,7 @@ export function CommerceStudio() {
       {[
         ["PRODUCT IDEAS",String(total)],
         ["REVIEWED / DRAFT",String(verified)],
+        ["ORDER SUMMARIES",String(snapshot?.orders?.length||0)],
         ["DATABASE",snapshot?.configured?"Connected":"Needs setup"],
         ["SHOPIFY",snapshot?.shopifyConfigured?"Credentials ready":"Not connected"],
       ].map(([name,value],i)=><section key={name} style={{...section,padding:17,borderTop:"3px solid "+themeColors[i]}}>
@@ -246,7 +249,31 @@ export function CommerceStudio() {
       </p>
     </section>
     <section style={section}>
-      <div style={{fontSize:12,color:"#83e0cd",fontWeight:800}}>04 / BUSINESS AUTONOMY ROADMAP</div>
+      <div style={{fontSize:12,letterSpacing:1.4,color:"#83e0cd",fontWeight:800}}>04 / ORDERS & AGENT ACTIVITY</div>
+      <h2 style={{margin:"12px 0"}}>Recent integration events</h2>
+      <p style={{fontSize:13,color:"#b4cbdc"}}>
+        Orders appear after Shopify signs and delivers configured order webhooks. No customer names, email addresses or shipping details are stored.
+      </p>
+      <div style={{display:"grid",gridTemplateColumns:"repeat(auto-fit,minmax(285px,1fr))",gap:16}}>
+        <div>
+          <h3>Orders</h3>
+          {(!snapshot?.orders?.length)&&<p style={{color:"#adc3d6"}}>No verified Shopify orders received yet.</p>}
+          {(snapshot?.orders||[]).map(order=><p key={order.id} style={{padding:11,background:"#0a1a2a",borderRadius:9,fontSize:13}}>
+            #{order.id} · {order.currency} {Number(order.total).toFixed(2)} · {order.financial_status}
+          </p>)}
+        </div>
+        <div>
+          <h3>Agent audit trail</h3>
+          {(!snapshot?.events?.length)&&<p style={{color:"#adc3d6"}}>No saved agent activity yet.</p>}
+          {(snapshot?.events||[]).map(event=><p key={event.id} style={{padding:11,background:"#0a1a2a",borderRadius:9,fontSize:13,lineHeight:1.55}}>
+            <strong>{event.agent}</strong> · {event.action}<br/>
+            <span style={{color:"#a6bdcd"}}>{event.result}</span>
+          </p>)}
+        </div>
+      </div>
+    </section>
+    <section style={section}>
+      <div style={{fontSize:12,color:"#83e0cd",fontWeight:800}}>05 / BUSINESS AUTONOMY ROADMAP</div>
       <h2 style={{margin:"10px 0"}}>Agent network &amp; revenue expansion</h2>
       <div style={{display:"grid",gridTemplateColumns:"repeat(auto-fit,minmax(260px,1fr))",gap:12}}>
         {[
