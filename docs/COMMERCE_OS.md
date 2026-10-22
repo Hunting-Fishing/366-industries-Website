@@ -1,6 +1,6 @@
 # 366 Industries Commerce OS — owner portal integration
 
-Private route: `/admin/commerce`. Entry: sign in as root owner through `/admin`, then select **Private Commerce Studio**.
+Private route: `/admin/jordi-shopify-promotions` (**Jordi Shopify & Promotions**). Old `/admin/commerce` redirects to it. Sign in as the root owner through `/admin`.
 
 This is a Next.js/Cloudflare-compatible port of the earlier Python/SQLite Shopify agent prototype into the **existing GitHub website**, sharing the site's verified, HttpOnly, HMAC-signed owner admin cookie. The Python prototype is **not** deployed as a second public service.
 
@@ -19,8 +19,8 @@ This is a Next.js/Cloudflare-compatible port of the earlier Python/SQLite Shopif
 ## Required setup before the portal can save records
 
 1. Identify the actual Supabase project used by this 366 Industries website. The connected Supabase account may show other projects; do **not** apply a migration to a similarly named but unrelated project.
-2. Review and apply `supabase/migrations/002_366_commerce_os.sql` in that project's SQL editor/migration workflow. It creates four tables with RLS **on** and no read/write grants to `anon` or `authenticated`; only `service_role` has CRUD grants. Confirm Data API exposure is enabled for the project's `public` schema, and direct service access works.
-3. Set these as **server-side hosting secrets** (never commit values): `SUPABASE_URL` and `SUPABASE_SECRET_KEY` (new secret-key format) or `SUPABASE_SERVICE_ROLE_KEY` (legacy). Keep existing `ADMIN_SESSION_SECRET` configured (at least 32 characters), plus the existing root-admin authentication configuration. Owner email remains `jordilwbailey@gmail.com`.
+2. Review and apply `supabase/migrations/002_366_commerce_os.sql` and `supabase/migrations/003_jordi_shopify_promotions_workspace.sql` in that project's SQL editor/migration workflow. They create the commerce and workspace tracking tables with RLS **on** and no read/write grants to `anon` or `authenticated`; only `service_role` has CRUD grants. Confirm Data API exposure is enabled for the project's `public` schema, and direct service access works.
+3. Set these as **server-side hosting secrets** (never commit values): `JORDI_SHOPIFY_SUPABASE_PROJECT_REF`, `JORDI_SHOPIFY_SUPABASE_URL`, and `JORDI_SHOPIFY_SUPABASE_SECRET_KEY`. Use only the verified 366 Industries project. Generic `SUPABASE_URL` is no longer a fallback for Commerce OS to avoid accidental writes to unrelated projects. Keep existing `ADMIN_SESSION_SECRET` configured (at least 32 characters), plus the existing root-admin authentication configuration. Owner email remains `jordilwbailey@gmail.com`.
 4. Sign in at `/admin` with the actual root admin credentials. Open **Commerce Studio** and create an idea. Ensure the record remains after a refresh and is inaccessible with anonymous / normal member sessions.
 5. Only if Shopify integration is wanted, create a Shopify store, install a properly authorized application with `write_products` and the owner's product-creation permissions, then set `SHOPIFY_SHOP` (shop subdomain, without `.myshopify.com`), and **one** of:
    - `SHOPIFY_ACCESS_TOKEN` (valid Shopify offline/access token), or
@@ -55,3 +55,7 @@ node --test tests/*.test.mjs
 Confirm anonymous requests to `/api/admin/commerce` are rejected (401); a signed normal-member cookie cannot gain owner privileges. Verify the owner page is not indexed. Check database RLS with anonymous credentials and `service_role` access separately.
 
 No separate Python service is required to access the integrated Next.js dashboard.
+
+## Dedicated owner workspace
+
+See `docs/JORDI_SHOPIFY_PROMOTIONS.md` for the promotions tracker, personal build setup task tracker, canonical admin route, and strict 366 Industries Supabase project-ref binding.

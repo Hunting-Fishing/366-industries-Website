@@ -34,10 +34,14 @@ export function contribution(p: CommerceProduct) {
 }
 
 function dataConfig() {
-  const url = process.env.SUPABASE_URL || process.env.NEXT_PUBLIC_SUPABASE_URL || "";
-  const key = process.env.SUPABASE_SECRET_KEY || process.env.SUPABASE_SERVICE_ROLE_KEY || "";
-  if (!/^https:\/\/[a-z0-9.-]+(?:\:\d+)?$/i.test(url.replace(/\/+$/, "")) || !key) {
-    throw new Error("Commerce database not configured: SUPABASE_URL and SUPABASE_SECRET_KEY (or SUPABASE_SERVICE_ROLE_KEY) required.");
+  // Explicit project binding prevents silently writing Jordi's business data
+  // into an unrelated 365 Motors / Homebrew / Barangay Supabase project.
+  const ref = process.env.JORDI_SHOPIFY_SUPABASE_PROJECT_REF || "";
+  const url = process.env.JORDI_SHOPIFY_SUPABASE_URL || "";
+  const key = process.env.JORDI_SHOPIFY_SUPABASE_SECRET_KEY || "";
+  if (!/^[a-z]{1,30}[a-z0-9]{5,30}$/.test(ref) ||
+      url.replace(/\/+$/, "") !== "https://" + ref + ".supabase.co" || !key) {
+    throw new Error("Jordi Commerce database is not configured. Set JORDI_SHOPIFY_SUPABASE_PROJECT_REF, JORDI_SHOPIFY_SUPABASE_URL and JORDI_SHOPIFY_SUPABASE_SECRET_KEY to the verified 366 Industries Supabase project.");
   }
   return { url: url.replace(/\/+$/, ""), key };
 }
@@ -53,7 +57,7 @@ export function shopifyConfigured() {
 }
 
 /** Only called by protected server routes. Never accepts caller-provided table names. */
-export async function commerceRest<T>(table: "commerce_products" | "commerce_orders" | "commerce_webhook_receipts" | "commerce_events",
+export async function commerceRest<T>(table: "commerce_products" | "commerce_orders" | "commerce_webhook_receipts" | "commerce_events" | "commerce_promotions" | "commerce_work_items",
   query = "", method = "GET", body?: unknown, prefer = "return=representation"): Promise<T> {
   const { url, key } = dataConfig();
   const headers: Record<string,string> = {
