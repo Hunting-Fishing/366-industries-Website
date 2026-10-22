@@ -101,6 +101,20 @@ export default async function AdminPage() {
       </section>
 
       <section className="admin-grid">
+        <article className="admin-panel" style={{gridColumn:"1 / -1",border:"1px solid #45c4a2"}}>
+          <span>02 / PRIVATE COMMERCE OS</span>
+          <h2>Shopify &amp; AI Agent Business Studio</h2>
+          <p>
+            Owner-only workspace for dropshipping, print-on-demand, digital
+            products, original creations, conversation-starter apparel, and
+            future books. Create and review product ideas, generate drafts,
+            and connect Shopify safely.
+          </p>
+          <div className="admin-links">
+            <Link href="/admin/commerce">↗ Open Private Commerce Studio</Link>
+          </div>
+        </article>
+
         {/* INTERACTIVE USERS & DONATIONS CONTROL */}
         <AdminUsersControl
           initialUsers={usersResult.users}
