@@ -35,8 +35,15 @@ export async function GET() {
     }, {headers: {"Cache-Control":"no-store"}});
   }
   try {
+    const [products, orders, events] = await Promise.all([
+      listCommerceProducts(),
+      commerceRest<Array<{id:string;total:number;currency:string;financial_status:string;created_at:string}>>(
+        "commerce_orders","?select=id,total,currency,financial_status,created_at&order=created_at.desc&limit=12"),
+      commerceRest<Array<{id:string;agent:string;action:string;result:string;created_at:string}>>(
+        "commerce_events","?select=id,agent,action,result,created_at&order=created_at.desc&limit=20"),
+    ]);
     return NextResponse.json({
-      ok: true, configured: true, products: await listCommerceProducts(),
+      ok: true, configured: true, products, orders, events,
       shopifyConfigured: shopifyConfigured(),
       aiConfigured: Boolean(process.env.OPENAI_API_KEY),
     }, {headers: {"Cache-Control":"no-store"}});
