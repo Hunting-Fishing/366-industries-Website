@@ -1,6 +1,7 @@
 import { cookies } from "next/headers";
 import { NextResponse } from "next/server";
 import { adminCookie, createAdminSessionToken } from "../../../admin/auth";
+import { issueMemberSession, verifyMemberSession } from "../../../lib/member-session";
 import {
   getSupabaseConfig,
   isAdminEmail,
@@ -23,31 +24,12 @@ export type MemberSession = {
 
 export async function GET() {
   const cookieStore = await cookies();
-  const raw = cookieStore.get(MEMBER_COOKIE)?.value;
-  if (!raw) {
-    return NextResponse.json({
-      authenticated: false,
-      user: null,
-      supabaseConfigured: Boolean(getSupabaseConfig()),
-    });
-  }
-  try {
-    const user = JSON.parse(decodeURIComponent(raw)) as MemberSession;
-    if (isAdminEmail(user.email)) {
-      user.role = "admin";
-    }
-    return NextResponse.json({
-      authenticated: true,
-      user,
-      supabaseConfigured: Boolean(getSupabaseConfig()),
-    });
-  } catch {
-    return NextResponse.json({
-      authenticated: false,
-      user: null,
-      supabaseConfigured: Boolean(getSupabaseConfig()),
-    });
-  }
+  const user = await verifyMemberSession(cookieStore.get(MEMBER_COOKIE)?.value);
+  return NextResponse.json({
+    authenticated: Boolean(user),
+    user,
+    supabaseConfigured: Boolean(getSupabaseConfig()),
+  });
 }
 
 export async function POST(request: Request) {
@@ -61,44 +43,37 @@ export async function POST(request: Request) {
       region?: string;
       updatesOptIn?: boolean;
     };
-
     const mode = body.mode === "signup" ? "signup" : "login";
     const email = String(body.email ?? "").trim().toLowerCase();
     const password = String(body.password ?? "");
 
-    if (!email || !email.includes("@")) {
+    if (!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(email) || password.length < 6) {
       return NextResponse.json(
-        { ok: false, message: "Please enter a valid email address." },
+        { ok: false, message: "A valid email and password (minimum 6 characters) are required." },
         { status: 400 }
       );
     }
-
-    if (password.length < 6) {
+    if (!getSupabaseConfig()) {
       return NextResponse.json(
-        { ok: false, message: "Password must be at least 6 characters." },
-        { status: 400 }
+        { ok: false, message: "Account authentication is not configured yet." },
+        { status: 503 }
+      );
+    }
+    if (mode === "signup" && isAdminEmail(email)) {
+      return NextResponse.json(
+        { ok: false, message: "The owner account must be provisioned and verified in Supabase Auth." },
+        { status: 403 }
       );
     }
 
-    const isRootAdmin = isAdminEmail(email);
-
-    let derivedName =
-      body.name && body.name.trim().length > 0
-        ? body.name.trim()
-        : isRootAdmin
-        ? "Jordi L. W. Bailey (Founder & Super Admin)"
-        : email.split("@")[0].replace(/[._-]/g, " ");
-    let resolvedAccountType = isRootAdmin
-      ? "Root Super Admin • 366 & 1st Defence Industries"
-      : body.accountType || "Humanitarian Supporter & AI Builder";
-    let resolvedRegion =
-      body.region || "Global (Canada • Philippines • USA)";
-    let resolvedRole: "admin" | "member" = isRootAdmin ? "admin" : "member";
+    let derivedName = body.name?.trim() || email.split("@")[0].replace(/[._-]/g, " ");
+    let resolvedAccountType = body.accountType || "Humanitarian Supporter & AI Builder";
+    let resolvedRegion = body.region || "Global (Canada • Philippines • USA)";
+    let resolvedRole: "admin" | "member" = "member";
     let authUserId: string | null = null;
-    let supabaseSynced = false;
 
     if (mode === "signup") {
-      const supaRes = await supabaseSignUpUser({
+      const result = await supabaseSignUpUser({
         email,
         password,
         name: derivedName,
@@ -106,40 +81,41 @@ export async function POST(request: Request) {
         region: resolvedRegion,
         updatesOptIn: body.updatesOptIn ?? true,
       });
-
-      if (supaRes.error && !isRootAdmin) {
+      if (!result.synced || result.error) {
         return NextResponse.json(
-          { ok: false, message: supaRes.error },
+          { ok: false, message: result.error || "Unable to register this account." },
           { status: 400 }
         );
       }
-      supabaseSynced = supaRes.synced;
-      authUserId = supaRes.authUserId ?? null;
-      resolvedRole = supaRes.role;
+      if (!result.accessToken || !result.authUserId) {
+        return NextResponse.json({
+          ok: true,
+          emailConfirmationRequired: true,
+          message: "Registration received. Verify your email, then sign in.",
+          user: null,
+        });
+      }
+      authUserId = result.authUserId;
     } else {
-      const supaRes = await supabaseSignInUser({
+      const result = await supabaseSignInUser({
         email,
         password,
         fallbackName: derivedName,
         fallbackAccountType: resolvedAccountType,
         fallbackRegion: resolvedRegion,
       });
-
-      if (supaRes.error && !isRootAdmin) {
+      if (!result.synced || !result.accessToken || !result.authUserId || result.error) {
         return NextResponse.json(
-          { ok: false, message: supaRes.error },
+          { ok: false, message: result.error || "Invalid email or password." },
           { status: 401 }
         );
       }
-
-      supabaseSynced = supaRes.synced;
-      authUserId = supaRes.authUserId ?? null;
-      resolvedRole = supaRes.role;
-      if (supaRes.profile) {
-        derivedName = supaRes.profile.name;
-        resolvedRole = supaRes.profile.role;
-        resolvedAccountType = supaRes.profile.accountType;
-        resolvedRegion = supaRes.profile.region;
+      authUserId = result.authUserId;
+      resolvedRole = result.role;
+      if (result.profile) {
+        derivedName = result.profile.name;
+        resolvedAccountType = result.profile.accountType;
+        resolvedRegion = result.profile.region;
       }
     }
 
@@ -150,33 +126,36 @@ export async function POST(request: Request) {
       role: resolvedRole,
       accountType: resolvedAccountType,
       region: resolvedRegion,
-      supabaseSynced,
+      supabaseSynced: true,
       createdAt: new Date().toISOString(),
     };
 
-    const response = NextResponse.json({
-      ok: true,
-      user,
-      supabaseSynced,
-    });
-
-    response.cookies.set(MEMBER_COOKIE, encodeURIComponent(JSON.stringify(user)), {
-      httpOnly: false,
-      secure: true,
-      sameSite: "lax",
-      path: "/",
-      maxAge: 60 * 60 * 24 * 30,
-    });
-
-    // If user is an admin (e.g. Jordilwbailey@gmail.com), also issue the admin control room cookie!
-    if (resolvedRole === "admin") {
-      response.cookies.set(
-        adminCookie.name,
-        await createAdminSessionToken(),
-        adminCookie.options
+    // A signed HttpOnly session is mandatory: never accept a user-written JSON cookie.
+    let signedMember: string;
+    let signedAdmin: string | null = null;
+    try {
+      signedMember = await issueMemberSession(user);
+      if (mode === "login" && resolvedRole === "admin" && isAdminEmail(email)) {
+        signedAdmin = await createAdminSessionToken();
+      }
+    } catch {
+      return NextResponse.json(
+        { ok: false, message: "Session signing is not configured on the server." },
+        { status: 503 }
       );
     }
 
+    const response = NextResponse.json({ ok: true, user, supabaseSynced: true });
+    response.cookies.set(MEMBER_COOKIE, signedMember, {
+      httpOnly: true,
+      secure: true,
+      sameSite: "lax",
+      path: "/",
+      maxAge: 60 * 60 * 24 * 7,
+    });
+    if (signedAdmin) {
+      response.cookies.set(adminCookie.name, signedAdmin, adminCookie.options);
+    }
     return response;
   } catch {
     return NextResponse.json(
