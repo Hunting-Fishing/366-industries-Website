@@ -37,6 +37,8 @@ Applied in order through the authenticated Supabase connector:
 1. `jordi_shopify_commerce_core`, tracked in GitHub as `supabase/migrations/002_366_commerce_os.sql` — catalog, order summaries, webhook receipts and event auditing.
 2. `jordi_shopify_promotions_tracking`, tracked as `supabase/migrations/003_jordi_shopify_promotions_workspace.sql` — personal build and campaign trackers.
 3. `jordi_shopify_workspace_verified_platform_seed`, tracked as `supabase/migrations/004_jordi_workspace_verified_366_platform.sql` — descriptive table labels and initial owner-only work board.
+4. `admin_session_guard`, tracked as `supabase/migrations/005_admin_session_guard.sql` — service-role-only validation that privileged website tokens still have a live Supabase Auth session.
+5. `shopify_webhook_ingest`, tracked as `supabase/migrations/006_shopify_webhook_ingest.sql` — atomic delivery deduplication and ordered, non-personal Shopify order-summary updates.
 
 The **six `public.commerce_*` tables** are a dedicated logical group within this existing Supabase project. Existing Homebrew builder tables were not modified. The `public` schema is intentional because the Next.js server accesses the Supabase Data API at `/rest/v1/<table>`.
 
@@ -50,7 +52,7 @@ The server-side Commerce OS now pins the project ref and API URL to the confirme
 
 Optional explicit variables `JORDI_SHOPIFY_SUPABASE_PROJECT_REF` and `JORDI_SHOPIFY_SUPABASE_URL` may be set to the project ID and API URL above, but the code defaults to these exact verified public values. If the existing website already has both a generic service-role credential and a generic Supabase URL that **exactly** matches this project, the Commerce OS can safely reuse that key instead. It will not reuse a service credential associated with any other project.
 
-Never commit or expose a service-role/secret key to GitHub, client code, public documentation, screenshots, browser environment variables, or chat. Owner-only API routes use the existing HMAC-signed administrator session; no email-only authorization is allowed. Verify authorized reads/writes and public-user denial after the Cloudflare secret is configured.
+Never commit or expose a service-role/secret key to GitHub, client code, public documentation, screenshots, browser environment variables, or chat. Owner-only API routes use a short-lived, HttpOnly Supabase access token whose live Auth session is checked on every privileged request; no email-only authorization is allowed. Verify authorized reads/writes and public-user denial after the Cloudflare secret is configured.
 
 Do not apply the old `001_366_auth_and_donations.sql` migration to this project merely for Commerce OS. It is unrelated and its broad legacy policies require separate review.
 
@@ -69,9 +71,9 @@ As described in `docs/COMMERCE_OS.md`, Shopify actions require store credentials
 
 ## Suggested personal launch checklist
 
-- ✅ Database project `ujkizgblscqcejghxemb` selected; migrations 002, 003 and 004 applied and access privileges verified.
+- ✅ Database project `ujkizgblscqcejghxemb` selected; migrations 002 through 006 applied and access privileges verified.
 - Configure Cloudflare server-only Supabase secret and test portal persistence end-to-end.
-- Create Shopify store, domain, merchant policies and checkout.
+- Configure the preserved active Shopify store, domain, merchant policies and checkout.
 - Select initial print-on-demand and dropshipping providers for global fulfillment.
 - Prototype and test color-vision apparel with real observers; verify print repeatability.
 - Develop original deer/cosmos/dolphin designs and conversation starters.

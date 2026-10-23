@@ -1,40 +1,26 @@
+import "server-only";
 import { cookies } from "next/headers";
-import { ROOT_ADMIN_EMAIL } from "../lib/supabase";
+import {
+  getSupabaseConfig,
+  ROOT_ADMIN_EMAIL,
+} from "../lib/supabase";
+import {
+  accessTokenClaims,
+  validLiveAccessTokenClaims,
+  validateAdminAccessToken,
+} from "./auth-core.mjs";
 
 const COOKIE_NAME = "industries_366_admin";
-const TOKEN_VERSION = "v2";
-const SESSION_MS = 7 * 24 * 60 * 60 * 1000;
+// Supabase access tokens normally last one hour. Expire the browser cookie a
+// little earlier and revalidate it with Auth on every privileged request.
+const SESSION_SECONDS = 55 * 60;
 
-function getSessionSecret() {
-  const secret = process.env.ADMIN_SESSION_SECRET;
-  if (!secret || secret.length < 32) {
-    throw new Error("ADMIN_SESSION_SECRET must be configured (at least 32 characters).");
+export async function createAdminSessionToken(accessToken: string) {
+  const claims = accessTokenClaims(accessToken);
+  if (!validLiveAccessTokenClaims(claims)) {
+    throw new Error("Supabase administrator session is invalid or expired.");
   }
-  return secret;
-}
-
-function toHex(buffer: ArrayBuffer) {
-  return Array.from(new Uint8Array(buffer), (byte) =>
-    byte.toString(16).padStart(2, "0")
-  ).join("");
-}
-
-async function sign(value: string) {
-  const key = await crypto.subtle.importKey(
-    "raw",
-    new TextEncoder().encode(getSessionSecret()),
-    { name: "HMAC", hash: "SHA-256" },
-    false,
-    ["sign"]
-  );
-  return toHex(await crypto.subtle.sign("HMAC", key, new TextEncoder().encode(value)));
-}
-
-export async function createAdminSessionToken() {
-  const expiration = Date.now() + SESSION_MS;
-  const nonce = crypto.randomUUID();
-  const payload = `${TOKEN_VERSION}.${expiration}.${nonce}`;
-  return `${payload}.${await sign(payload)}`;
+  return accessToken;
 }
 
 export function constantTimeEqual(left: string, right: string) {
@@ -48,23 +34,15 @@ export function constantTimeEqual(left: string, right: string) {
 
 export async function getAuthenticatedAdminEmail(): Promise<string | null> {
   const cookieStore = await cookies();
-  const presented = cookieStore.get(COOKIE_NAME)?.value ?? "";
-  const parts = presented.split(".");
-  if (parts.length !== 4 || parts[0] !== TOKEN_VERSION) return null;
-
-  const [, expiry, nonce, signature] = parts;
-  const expiresAt = Number(expiry);
-  if (!Number.isSafeInteger(expiresAt) || expiresAt <= Date.now() || !/^[0-9a-f-]{36}$/.test(nonce) || !/^[0-9a-f]{64}$/.test(signature)) {
-    return null;
-  }
-
-  try {
-    const expected = await sign(`${TOKEN_VERSION}.${expiry}.${nonce}`);
-    return constantTimeEqual(signature, expected) ? ROOT_ADMIN_EMAIL : null;
-  } catch {
-    // Fail closed if the server signing secret is missing or invalid.
-    return null;
-  }
+  const accessToken = cookieStore.get(COOKIE_NAME)?.value ?? "";
+  const config = getSupabaseConfig();
+  // Live Auth validation plus the session RPC fail closed when either service
+  // is unavailable and revoke password-reset sessions immediately.
+  return validateAdminAccessToken({
+    accessToken,
+    config,
+    ownerEmail: ROOT_ADMIN_EMAIL,
+  });
 }
 
 export async function isAdminAuthenticated() {
@@ -78,6 +56,6 @@ export const adminCookie = {
     secure: true,
     sameSite: "lax" as const,
     path: "/",
-    maxAge: 60 * 60 * 24 * 7,
+    maxAge: SESSION_SECONDS,
   },
 };

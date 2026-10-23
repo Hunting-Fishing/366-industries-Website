@@ -8,6 +8,8 @@ export function AdminLoginForm() {
   const [email, setEmail] = useState("Jordilwbailey@gmail.com");
   const [error, setError] = useState("");
   const [busy, setBusy] = useState(false);
+  const [resetBusy, setResetBusy] = useState(false);
+  const [resetNotice, setResetNotice] = useState("");
 
   async function submit(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault();
@@ -54,6 +56,32 @@ export function AdminLoginForm() {
     router.refresh();
   }
 
+  async function requestPasswordReset() {
+    setResetBusy(true);
+    setResetNotice("");
+    setError("");
+    try {
+      const response = await fetch("/api/admin/password-reset/request", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({}),
+      });
+      const result = (await response.json()) as { message?: string };
+      if (!response.ok) {
+        setError(result.message ?? "Password recovery is temporarily unavailable.");
+      } else {
+        setResetNotice(
+          result.message ??
+            "If the owner account is available, a secure reset link has been sent."
+        );
+      }
+    } catch {
+      setError("Network error while requesting password recovery. Please try again.");
+    } finally {
+      setResetBusy(false);
+    }
+  }
+
   return (
     <form className="admin-login-form" onSubmit={submit}>
       <label htmlFor="admin-email">Admin email address</label>
@@ -85,6 +113,19 @@ export function AdminLoginForm() {
         {busy ? "Authenticating Admin…" : "Enter Admin & Users Control Room"}{" "}
         <span>→</span>
       </button>
+      <button
+        className="admin-reset-link"
+        type="button"
+        disabled={busy || resetBusy}
+        onClick={requestPasswordReset}
+      >
+        {resetBusy ? "Sending secure reset link…" : "Forgot password? Email a secure reset link"}
+      </button>
+      {resetNotice && (
+        <p className="form-notice" role="status">
+          {resetNotice}
+        </p>
+      )}
     </form>
   );
 }

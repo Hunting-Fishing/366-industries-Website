@@ -1,0 +1,20 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1600 480" role="img" aria-labelledby="title description">
+  <title id="title">Dimensional Futures logo concept</title>
+  <desc id="description">An open dimensional path symbol beside the words Dimensional Futures.</desc>
+  <g fill="none" stroke-linecap="square" stroke-linejoin="miter">
+    <path
+      d="M72 382V80H322V132H124V330H322V382H72Z"
+      stroke="#101828"
+      stroke-width="28"
+    />
+    <path
+      d="M146 324V138H378V190H198V272H378V324H146Z"
+      stroke="#2457FF"
+      stroke-width="28"
+    />
+  </g>
+  <g fill="#101828" font-family="Lexend, Arial, Helvetica, sans-serif">
+    <text x="470" y="214" font-size="118" font-weight="650" letter-spacing="7">DIMENSIONAL</text>
+    <text x="470" y="350" font-size="132" font-weight="650" letter-spacing="12">FUTURES</text>
+  </g>
+</svg>
