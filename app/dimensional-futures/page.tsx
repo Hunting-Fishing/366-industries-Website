@@ -7,32 +7,47 @@ import {
   designCommitments,
   developmentStatus,
   dimensionalFutures,
-  launchConcepts,
 } from "./brand-data";
+import { ConceptCatalog } from "./concept-catalog";
 import styles from "./dimensional-futures.module.css";
 
 export const metadata: Metadata = {
-  title: "Dimensional Futures | A 366 Industries Brand",
+  title: "Dimensional Futures Concept Shop | A 366 Industries Brand",
   description:
-    "Meet Dimensional Futures, a 366 Industries brand developing inclusive apparel and useful goods through co-design, specific product information, and responsible testing.",
+    "Browse the developing Dimensional Futures concept collection from 366 Industries: inclusive apparel and useful goods with transparent review and testing standards.",
 };
 
 export default function DimensionalFuturesPage() {
   return (
     <Shell>
-      <section className={styles.hero}>
-        <div className={styles.heroPattern} aria-hidden="true" />
-        <div className={styles.heroContent}>
-          <div className={styles.parentLockup}>
-            <span>366</span>
-            <strong>{dimensionalFutures.parentBrand}</strong>
+      <div className={styles.announcementBar} role="note">
+        <span>{dimensionalFutures.name} · {dimensionalFutures.parentBrand}</span>
+        <strong>Preview collection · Concepts only · Not yet for sale</strong>
+      </div>
+
+      <nav className={styles.brandNav} aria-label="Dimensional Futures shop navigation">
+        <div className={styles.brandNavInner}>
+          <a className={styles.brandNavLogo} href="#shop-top" aria-label="Dimensional Futures top">
+            <Image
+              src="/assets/dimensional-futures-logo-concept.svg"
+              alt=""
+              width={1600}
+              height={480}
+            />
+          </a>
+          <div className={styles.brandNavLinks}>
+            <a href="#catalog">New concepts</a>
+            <a href="#collections">Collections</a>
+            <a href="#standards">Our standards</a>
+            <a href="#build-status">Build status</a>
           </div>
-          <div className={styles.statusLine}>
-            <span aria-hidden="true" />
-            {dimensionalFutures.phase} · {dimensionalFutures.availability}
-          </div>
-          <h1 className={styles.visuallyHidden}>{dimensionalFutures.name}</h1>
-          <div className={styles.logoPanel}>
+        </div>
+      </nav>
+
+      <section id="shop-top" className={styles.storefrontHero}>
+        <div className={styles.storefrontCopy}>
+          <span className={styles.storefrontKicker}>Concept shop · launch in development</span>
+          <div className={styles.heroLogo}>
             <Image
               src="/assets/dimensional-futures-logo-concept.svg"
               alt=""
@@ -41,53 +56,86 @@ export default function DimensionalFuturesPage() {
               priority
             />
           </div>
-          <p className={styles.tagline}>{dimensionalFutures.tagline}</p>
+          <h1>Inclusive goods. More ways forward.</h1>
           <p className={styles.heroLead}>
-            {dimensionalFutures.descriptor} Designed around belonging, clarity,
-            choice, and the many valid ways people experience the world.
+            Explore the first apparel, mug, tote, and everyday-goods concepts
+            from Dimensional Futures. Every idea stays out of checkout until its
+            supplier, sample, price, claims, and community review are complete.
           </p>
           <div className="actions">
-            <ArrowLink href="#launch-capsule">Explore the concept capsule</ArrowLink>
+            <ArrowLink href="#catalog">Browse all concepts</ArrowLink>
             <ArrowLink href="#build-status" secondary>
-              See what happens before launch
+              See launch readiness
             </ArrowLink>
+          </div>
+          <div className={styles.heroProof}>
+            <span>8 first-capsule concepts</span>
+            <span>4 collection paths</span>
+            <span>0 products approved for sale</span>
           </div>
         </div>
 
-        <aside className={styles.heroStatement} aria-label="Dimensional Futures brand idea">
-          <span className={styles.statementIndex}>A / 366 INDUSTRIES</span>
-          <p>{dimensionalFutures.campaignLine}</p>
-          <div className={styles.statementFoot}>
-            <span>Color + pattern + words + shape</span>
-            <span>Co-design before claims</span>
-          </div>
+        <aside className={styles.retailStage} aria-label="Illustrative product concepts">
+          <article className={`${styles.heroProductCard} ${styles.heroProductPrimary}`}>
+            <span className={styles.visualNotice}>Illustrative concept · not a product photo</span>
+            <div className={`${styles.heroProductVisual} ${styles.heroTee}`} aria-hidden="true">
+              <div className={styles.conceptArtwork}>
+                Different is<br />part of human
+              </div>
+            </div>
+            <div className={styles.heroProductMeta}>
+              <div>
+                <span>Shared Futures</span>
+                <h2>Graphic tee concept</h2>
+              </div>
+              <b>In concept review</b>
+            </div>
+          </article>
+
+          <article className={`${styles.heroProductCard} ${styles.heroProductSecondary}`}>
+            <span className={styles.visualNotice}>Illustrative concept · not a product photo</span>
+            <div className={`${styles.heroProductVisual} ${styles.heroMug}`} aria-hidden="true">
+              <div className={styles.conceptArtwork}>
+                My pace is<br />still progress
+              </div>
+            </div>
+            <div className={styles.heroProductMeta}>
+              <div>
+                <span>Shared Futures</span>
+                <h2>Mug concept</h2>
+              </div>
+              <b>Price not set</b>
+            </div>
+          </article>
         </aside>
       </section>
 
-      <section className={styles.mission}>
-        <div>
-          <span className={styles.eyebrow}>Why this brand exists</span>
-          <h2>Different is part of human.</h2>
+      <section id="catalog" className={styles.catalogSection} aria-labelledby="catalog-title">
+        <div className={styles.catalogHeader}>
+          <div>
+            <span className={styles.eyebrow}>First capsule · concept catalog</span>
+            <h2 id="catalog-title">Browse the collection.</h2>
+          </div>
+          <div className={styles.catalogTrust}>
+            <strong>Shop-style browsing, honest launch status.</strong>
+            <p>
+              No price, material, color, size, inventory, or delivery promise is
+              shown until it has been verified.
+            </p>
+          </div>
         </div>
-        <div className={styles.missionCopy}>
-          <p>{dimensionalFutures.mission}</p>
-          <p>
-            Dimensional Futures is being built as a confident, design-led brand
-            under 366 Industries. It will not use pity, stereotypes, cure
-            language, or unverified medical and accessibility claims.
-          </p>
-        </div>
+        <ConceptCatalog />
       </section>
 
-      <section className={styles.collectionsSection} aria-labelledby="collections-title">
+      <section id="collections" className={styles.collectionsSection} aria-labelledby="collections-title">
         <div className={styles.sectionIntro}>
           <div>
-            <span className={styles.eyebrow}>Collection architecture</span>
+            <span className={styles.eyebrow}>Shop by collection direction</span>
             <h2 id="collections-title">Several paths. One shared future.</h2>
           </div>
           <p>
-            Every collection has a name, symbol, and visible pattern so meaning
-            never depends on color alone.
+            Every collection has a written name, symbol, and visible pattern so
+            meaning never depends on color alone.
           </p>
         </div>
         <div className={styles.collectionGrid}>
@@ -118,39 +166,18 @@ export default function DimensionalFuturesPage() {
         </div>
       </section>
 
-      <section id="launch-capsule" className={styles.capsuleSection}>
-        <div className={styles.sectionIntro}>
-          <div>
-            <span className={styles.eyebrow}>First capsule · concept stage</span>
-            <h2>Eight ideas to develop responsibly.</h2>
-          </div>
-          <p>
-            These are product concepts, not store listings. Materials, colors,
-            sizes, suppliers, prices, inventory, and launch dates have not been
-            approved.
-          </p>
+      <section className={styles.mission}>
+        <div>
+          <span className={styles.eyebrow}>The idea behind the shop</span>
+          <h2>Different is part of human.</h2>
         </div>
-        <div className={styles.conceptGrid}>
-          {launchConcepts.map((concept) => (
-            <article
-              className={`${styles.conceptCard} ${styles[`motif-${concept.motif}`]}`}
-              key={`${concept.index}-${concept.format}`}
-            >
-              <div className={styles.conceptVisual} aria-hidden="true">
-                <span>{concept.index}</span>
-                <i />
-              </div>
-              <div className={styles.conceptBody}>
-                <div className={styles.conceptMeta}>
-                  <span>{concept.collection}</span>
-                  <span>{concept.format}</span>
-                </div>
-                <h3>{concept.name}</h3>
-                <p>{concept.description}</p>
-                <strong className={styles.conceptStatus}>Concept · not yet for sale</strong>
-              </div>
-            </article>
-          ))}
+        <div className={styles.missionCopy}>
+          <p>{dimensionalFutures.mission}</p>
+          <p>
+            Dimensional Futures is being built as a confident, design-led brand
+            under 366 Industries. It will not use pity, stereotypes, cure
+            language, or unverified medical and accessibility claims.
+          </p>
         </div>
       </section>
 
@@ -194,14 +221,14 @@ export default function DimensionalFuturesPage() {
         </article>
       </section>
 
-      <section className={styles.commitmentsSection}>
+      <section id="standards" className={styles.commitmentsSection}>
         <div className={styles.sectionIntro}>
           <div>
-            <span className={styles.eyebrow}>How we intend to build</span>
+            <span className={styles.eyebrow}>How products reach the shop</span>
             <h2>Good intentions need production standards.</h2>
           </div>
           <p>
-            The brand remains in development until its products and claims are
+            The catalog remains a preview until its products and claims are
             supported by people, samples, and evidence.
           </p>
         </div>
@@ -219,7 +246,7 @@ export default function DimensionalFuturesPage() {
       <section id="build-status" className={styles.statusSection}>
         <div className={styles.statusHeading}>
           <div>
-            <span className={styles.eyebrow}>Transparent build status</span>
+            <span className={styles.eyebrow}>Transparent shop readiness</span>
             <h2>What is real today.</h2>
           </div>
           <div className={styles.updatedStamp}>
@@ -244,7 +271,7 @@ export default function DimensionalFuturesPage() {
         <div className={styles.gatesPanel}>
           <div>
             <span className={styles.eyebrow}>Approval gates before sale</span>
-            <h2>No shortcuts to the shop button.</h2>
+            <h2>No shortcuts to checkout.</h2>
           </div>
           <ol>
             {approvalGates.map((gate) => (
@@ -261,7 +288,7 @@ export default function DimensionalFuturesPage() {
       <section className={styles.closing}>
         <div className={styles.closingFold} aria-hidden="true" />
         <span className={styles.eyebrow}>Dimensional Futures · 366 Industries</span>
-        <h2>Help us make more ways forward.</h2>
+        <h2>Help us build the first responsible release.</h2>
         <p>
           We welcome experienced community reviewers, disabled and
           neurodivergent creatives, accessibility specialists, ethical suppliers,

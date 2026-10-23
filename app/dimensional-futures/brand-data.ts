@@ -54,80 +54,208 @@ export const collections = [
   },
 ] as const;
 
+export type ConceptCategory = "apparel" | "home" | "carry";
+
+export type ConceptSort = "featured" | "name-asc" | "concept-number";
+
+export type ConceptMotif = "lines" | "steps" | "grid" | "quiet" | "path";
+
+export type ConceptProduct = {
+  index: string;
+  id: string;
+  slug: string;
+  name: string;
+  format: string;
+  productType: string;
+  category: ConceptCategory;
+  collection: string;
+  motif: ConceptMotif;
+  featured: boolean;
+  stage: string;
+  status: "Concept · not for sale";
+  price: "Not set";
+  description: string;
+  defined: readonly string[];
+  openDecisions: readonly string[];
+};
+
+export type ConceptCategoryFilter = {
+  value: "all" | ConceptCategory;
+  label: string;
+};
+
+export type ConceptSortOption = {
+  value: ConceptSort;
+  label: string;
+};
+
+export const conceptCategoryFilters = [
+  { value: "all", label: "All concepts" },
+  { value: "apparel", label: "Apparel" },
+  { value: "home", label: "Home" },
+  { value: "carry", label: "Bags & pouches" },
+] as const satisfies readonly ConceptCategoryFilter[];
+
+export const conceptSortOptions = [
+  { value: "featured", label: "Featured" },
+  { value: "concept-number", label: "Concept number" },
+  { value: "name-asc", label: "Name: A–Z" },
+] as const satisfies readonly ConceptSortOption[];
+
 export const launchConcepts = [
   {
     index: "01",
+    id: "different-is-part-of-human-tee",
+    slug: "different-is-part-of-human-tee",
     name: "Different Is Part of Human",
     format: "Graphic tee",
+    productType: "Graphic tee",
+    category: "apparel",
     collection: "Shared Futures",
     motif: "lines",
+    featured: true,
+    stage: "Concept review",
+    status: "Concept · not for sale",
+    price: "Not set",
     description:
       "A bold everyday statement celebrating the many ways people think, sense, communicate, move, and experience the world.",
+    defined: ["Core message", "Graphic tee format", "Shared Futures collection"],
+    openDecisions: ["Original artwork", "Blank, materials, fit, and sizes", "Colors, supplier, samples, and price"],
   },
   {
     index: "02",
+    id: "my-pace-is-still-progress-tee",
+    slug: "my-pace-is-still-progress-tee",
     name: "My Pace Is Still Progress",
     format: "Graphic tee",
+    productType: "Graphic tee",
+    category: "apparel",
     collection: "Shared Futures",
     motif: "steps",
+    featured: true,
+    stage: "Concept review",
+    status: "Concept · not for sale",
+    price: "Not set",
     description:
       "A steady reminder that progress does not follow one schedule and can happen at the pace that works for you.",
+    defined: ["Core message", "Graphic tee format", "Shared Futures collection"],
+    openDecisions: ["Original artwork", "Blank, materials, fit, and sizes", "Colors, supplier, samples, and price"],
   },
   {
     index: "03",
+    id: "my-pace-is-still-progress-mug",
+    slug: "my-pace-is-still-progress-mug",
     name: "My Pace Is Still Progress",
     format: "Mug",
+    productType: "Mug",
+    category: "home",
     collection: "Shared Futures",
     motif: "steps",
+    featured: false,
+    stage: "Concept review",
+    status: "Concept · not for sale",
+    price: "Not set",
     description:
       "The same message for desks, kitchens, and quiet pauses, planned as a separate physical product concept.",
+    defined: ["Core message", "Mug format", "Shared Futures collection"],
+    openDecisions: ["Original wrap artwork", "Mug material, size, and handle", "Supplier, sample, print method, and price"],
   },
   {
     index: "04",
+    id: "make-room-for-every-mind-hoodie",
+    slug: "make-room-for-every-mind-hoodie",
     name: "Make Room for Every Mind",
     format: "Hoodie",
+    productType: "Hoodie",
+    category: "apparel",
     collection: "Many Minds",
     motif: "grid",
+    featured: true,
+    stage: "Concept review",
+    status: "Concept · not for sale",
+    price: "Not set",
     description:
       "An invitation to shape classrooms, workplaces, homes, and communities with more than one kind of mind in mind.",
+    defined: ["Core message", "Hoodie format", "Many Minds collection"],
+    openDecisions: ["Original artwork", "Blank, fabric weight, fit, and sizes", "Colors, supplier, samples, and price"],
   },
   {
     index: "05",
+    id: "focus-is-not-a-moral-issue-tee",
+    slug: "focus-is-not-a-moral-issue-tee",
     name: "Focus Is Not a Moral Issue",
     format: "Graphic tee",
+    productType: "Graphic tee",
+    category: "apparel",
     collection: "Many Minds",
     motif: "grid",
+    featured: false,
+    stage: "Concept review",
+    status: "Concept · not for sale",
+    price: "Not set",
     description:
       "A direct message that attention can vary and does not determine a person's effort, character, or worth.",
+    defined: ["Core message", "Graphic tee format", "Many Minds collection"],
+    openDecisions: ["Original artwork", "Paid community review", "Blank, sizes, supplier, samples, and price"],
   },
   {
     index: "06",
+    id: "quiet-is-communication-tee",
+    slug: "quiet-is-communication-tee",
     name: "Quiet Is Communication",
     format: "Low-ink tee",
+    productType: "Low-ink tee",
+    category: "apparel",
     collection: "Many Minds",
     motif: "quiet",
+    featured: true,
+    stage: "Concept review",
+    status: "Concept · not for sale",
+    price: "Not set",
     description:
       "An understated concept honoring communication that may be spoken, signed, written, typed, gestured, or quiet.",
+    defined: ["Core message", "Low-ink tee direction", "Many Minds collection"],
+    openDecisions: ["Original artwork and ink coverage", "Paid community review", "Blank, sizes, supplier, samples, and price"],
   },
   {
     index: "07",
+    id: "tools-not-apologies-organizer-pouch",
+    slug: "tools-not-apologies-organizer-pouch",
     name: "Tools, Not Apologies",
     format: "Organizer pouch",
+    productType: "Organizer pouch",
+    category: "carry",
     collection: "Many Minds",
     motif: "grid",
+    featured: false,
+    stage: "Concept review",
+    status: "Concept · not for sale",
+    price: "Not set",
     description:
       "A practical home for personal supports such as pens, chargers, communication cards, and fidgets—no explanation required.",
+    defined: ["Core message", "Organizer pouch format", "Many Minds collection"],
+    openDecisions: ["Original artwork", "Dimensions, fabric, closure, and compartments", "Supplier, samples, durability testing, and price"],
   },
   {
     index: "08",
+    id: "access-is-everybodys-business-tote",
+    slug: "access-is-everybodys-business-tote",
     name: "Access Is Everybody's Business",
     format: "Tote",
+    productType: "Tote",
+    category: "carry",
     collection: "Access Forward",
     motif: "path",
+    featured: true,
+    stage: "Concept review",
+    status: "Concept · not for sale",
+    price: "Not set",
     description:
       "A clear statement that accessibility is a shared responsibility, not an individual burden.",
+    defined: ["Core message", "Tote format", "Access Forward collection"],
+    openDecisions: ["Original artwork", "Dimensions, material, handle, and weight rating", "Paid review, supplier, samples, and price"],
   },
-] as const;
+] as const satisfies readonly ConceptProduct[];
 
 export const designCommitments = [
   {

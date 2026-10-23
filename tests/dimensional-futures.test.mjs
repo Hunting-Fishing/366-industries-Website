@@ -30,11 +30,12 @@ test("Dimensional Futures is a visible 366 Industries brand section", async () =
 });
 
 test("brand copy keeps accessibility and commerce claims responsible", async () => {
-  const [page, data] = await Promise.all([
+  const [page, data, catalog] = await Promise.all([
     source("app/dimensional-futures/page.tsx"),
     source("app/dimensional-futures/brand-data.ts"),
+    source("app/dimensional-futures/concept-catalog.tsx"),
   ]);
-  const combined = `${page}\n${data}`;
+  const combined = `${page}\n${data}\n${catalog}`;
 
   assert.match(combined, /Never a\s+diagnostic test/);
   assert.match(combined, /Never rely on color alone/);
@@ -44,6 +45,32 @@ test("brand copy keeps accessibility and commerce claims responsible", async () 
   assert.doesNotMatch(combined, /Shop now|Add to cart|Buy now|sensory safe/i);
   assert.doesNotMatch(combined, /only (?:the )?colorblind (?:can|will) see/i);
   assert.doesNotMatch(combined, /\$\d+(?:\.\d{2})?/);
+});
+
+test("concept catalog behaves like a store without pretending products are ready", async () => {
+  const [catalog, data, chrome] = await Promise.all([
+    source("app/dimensional-futures/concept-catalog.tsx"),
+    source("app/dimensional-futures/brand-data.ts"),
+    source("app/components.tsx"),
+  ]);
+
+  const conceptRecords = data.match(/export const launchConcepts = \[([\s\S]*?)\] as const/);
+  assert.ok(conceptRecords);
+  assert.equal((conceptRecords[1].match(/status: "Concept · not for sale"/g) ?? []).length, 8);
+  assert.match(catalog, /aria-label="Filter concept catalog"/);
+  assert.match(catalog, />Search concepts</);
+  assert.match(catalog, />Sort concepts</);
+  assert.match(catalog, /aria-pressed=/);
+  assert.match(catalog, /aria-live="polite"/);
+  assert.match(catalog, /<details/);
+  assert.match(catalog, /View concept details/);
+  assert.match(catalog, /for \{concept\.name\}/);
+  assert.match(catalog, /className=\{styles\.visualDisclosure\}/);
+  assert.match(catalog, /No ordering, payment, or checkout is available/);
+  assert.doesNotMatch(catalog, /fetch\(|shopify|storefront api/i);
+  assert.match(chrome, /className="skip-link" href="#main-content"/);
+  assert.match(chrome, /id="main-content"/);
+  assert.match(chrome, /aria-controls="main-navigation"/);
 });
 
 test("renders the Dimensional Futures page from the built Worker", async () => {
@@ -70,5 +97,7 @@ test("renders the Dimensional Futures page from the built Worker", async () => {
   const html = await response.text();
   assert.match(html, /Dimensional Futures/);
   assert.match(html, /A 366 Industries brand/);
-  assert.match(html, /Concept · not yet for sale/);
+  assert.match(html, /Concept · not for sale/);
+  assert.match(html, /Search concepts/);
+  assert.match(html, /View concept details/);
 });

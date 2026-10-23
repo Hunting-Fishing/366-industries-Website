@@ -2,13 +2,14 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import type { ReactNode } from "react";
 
 export function Header() {
   const [open, setOpen] = useState(false);
   const [memberName, setMemberName] = useState<string | null>(null);
   const [isAdminUser, setIsAdminUser] = useState<boolean>(false);
+  const menuButtonRef = useRef<HTMLButtonElement>(null);
   const pathname = usePathname();
 
   useEffect(() => {
@@ -39,6 +40,17 @@ export function Header() {
     window.addEventListener("366-auth-changed", syncAuth);
     return () => window.removeEventListener("366-auth-changed", syncAuth);
   }, []);
+
+  useEffect(() => {
+    if (!open) return;
+    function closeOnEscape(event: KeyboardEvent) {
+      if (event.key !== "Escape") return;
+      setOpen(false);
+      requestAnimationFrame(() => menuButtonRef.current?.focus());
+    }
+    document.addEventListener("keydown", closeOnEscape);
+    return () => document.removeEventListener("keydown", closeOnEscape);
+  }, [open]);
 
   const links: [string, string, string?][] = [
     ["Clean Water", "/water", "WASH"],
@@ -93,15 +105,17 @@ export function Header() {
         </Link>
 
         <button
+          ref={menuButtonRef}
           className="menu-button"
           onClick={() => setOpen(!open)}
           aria-expanded={open}
+          aria-controls="main-navigation"
           aria-label="Toggle navigation"
         >
           {open ? "✕ Close" : "☰ Menu"}
         </button>
 
-        <nav className={open ? "nav open" : "nav"} aria-label="Main navigation">
+        <nav id="main-navigation" className={open ? "nav open" : "nav"} aria-label="Main navigation">
           {links.map(([label, href, badge]) => {
             const isActive = pathname === href || (href !== "/" && pathname?.startsWith(href));
             return (
@@ -245,8 +259,13 @@ export function Footer() {
 export function Shell({ children }: { children: ReactNode }) {
   return (
     <>
+      <a className="skip-link" href="#main-content">
+        Skip to main content
+      </a>
       <Header />
-      <main>{children}</main>
+      <main id="main-content" tabIndex={-1}>
+        {children}
+      </main>
       <Footer />
     </>
   );
