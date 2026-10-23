@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { ArrowLink, Shell } from "./components";
+import { DimensionalFuturesFeature } from "./dimensional-futures/brand-feature";
 import { DonationSection } from "./donate/donation-widget";
 import { futureIdeas, ventures } from "./site-data";
 
@@ -559,6 +560,8 @@ export default function Home() {
           </div>
         </div>
       </section>
+
+      <DimensionalFuturesFeature />
 
       {/* COMMUNITY & FUTURE PIPELINE */}
       <section className="section future-preview">

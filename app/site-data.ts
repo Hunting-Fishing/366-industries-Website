@@ -174,6 +174,20 @@ export const ventures: Venture[] = [
     number: "11",
     image: "/assets/ventures-hero.png",
   },
+  {
+    slug: "dimensional-futures",
+    name: "Dimensional Futures",
+    category: "Inclusive Apparel + Useful Goods",
+    division: "commercial",
+    status: "Brand development — concept and community review",
+    description:
+      "A 366 Industries brand developing inclusive apparel and useful goods around different ways of seeing, thinking, sensing, moving and communicating.",
+    impact:
+      "Advance access-minded design through responsible language, paid community input, clear product details and physical testing before sale.",
+    href: "/dimensional-futures",
+    number: "12",
+    image: "/assets/dimensional-futures-logo-concept-preview.png",
+  },
 ];
 
 export const projectDetails: ProjectDetail[] = ventures.map((venture) => ({
@@ -200,6 +214,8 @@ export const projectDetails: ProjectDetail[] = ventures.map((venture) => ({
         "A focused marketplace built to connect pipe inventory with Oil & Gas buyers who are ready to source.",
       "remote-build-zone":
         "Drive real machines from anywhere: FPV racing, track cameras, queued online control and a path toward autonomous operation.",
+      "dimensional-futures":
+        "More ways to see, think, sense, move and communicate—expressed through inclusive apparel and useful goods developed with care.",
       "solar-borehole-water-hubs":
         "Deep borehole drilling, off-grid solar pumping, multi-stage filtration, IoT flow sensors and smart prepaid water dispensers for homes, blackout-hit communities and rural farms.",
     }[venture.slug] || venture.impact,
@@ -346,6 +362,20 @@ export const projectDetails: ProjectDetail[] = ventures.map((venture) => ({
           copy: "Build toward battery telemetry, automated pit return, charging docks, autonomous safety behavior and unattended race-cycle recovery.",
         },
       ],
+      "dimensional-futures": [
+        {
+          title: "Design with people",
+          copy: "Invite paid community advisors and featured artists into the work before products or claims are approved.",
+        },
+        {
+          title: "Name exact features",
+          copy: "Describe materials, fit, texture, contrast and tactile details instead of promising one universal experience.",
+        },
+        {
+          title: "Test before sale",
+          copy: "Keep concepts unpublished until suppliers, samples, community review, costs and product information are approved.",
+        },
+      ],
       "solar-borehole-water-hubs": [
         {
           title: "Drill & power with solar",
@@ -376,6 +406,8 @@ export const projectDetails: ProjectDetail[] = ventures.map((venture) => ({
       ? "/humanity"
       : venture.slug === "366-ai-designer"
       ? "/ai-designer"
+      : venture.slug === "dimensional-futures"
+      ? "/dimensional-futures"
       : "/about#partner",
 }));
 

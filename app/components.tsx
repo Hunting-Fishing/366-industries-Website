@@ -226,6 +226,7 @@ export function Footer() {
             <Link href="/login">Member &amp; Donor Log In</Link>
             <Link href="/signup">Create a 366 Account (Sign Up)</Link>
             <Link href="/ventures">All Separated Ventures</Link>
+            <Link href="/dimensional-futures">Dimensional Futures — Inclusive Goods</Link>
             <Link href="/ventures/pipe-buyer">Pipe Buyer Marketplace</Link>
             <Link href="/games">366 Purpose-Led Games</Link>
             <Link href="/future">Community Innovation Pipeline</Link>
