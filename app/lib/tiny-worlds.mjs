@@ -31,7 +31,7 @@ export async function signState(state, secret) {
   return payload + "." + signature;
 }
 export async function readState(token, secret, owner, now = Date.now()) {
-  if (typeof token !== "string" || token.length > 75000) throw new StoryError("This story bookmark is invalid.");
+  if (typeof token !== "string" || token.length > 250000) throw new StoryError("This story bookmark is invalid.");
   const [payload, sig, extra] = token.split(".");
   if (extra || !payload || !/^[0-9a-f]{64}$/.test(sig || "")) throw new StoryError("This story bookmark is invalid.");
   const bytes = Uint8Array.from(sig.match(/../g), x => parseInt(x, 16));

@@ -115,3 +115,13 @@ test("story memory stays bounded while the chapter count continues", async () =>
     body = { action: "continue", token: saved.token, idea: "Explore together", anchor: picture };
   }
 });
+
+test("multilingual cumulative memory can be read back without truncating its signed bookmark", async () => {
+  const state = await startState(start, owner);
+  state.summary = "友".repeat(7000);
+  state.recent = Array.from({ length: 3 }, () => ({ title: "友".repeat(120), text: "友".repeat(3500), choice: "友".repeat(1200) }));
+  state.scene = { text: "友".repeat(3500), illustration: "友".repeat(2200) };
+  const token = await signState(state, secret);
+  assert.ok(token.length > 75000);
+  assert.equal((await readState(token, secret, owner)).summary, state.summary);
+});
