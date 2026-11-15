@@ -46,6 +46,7 @@ export function Header() {
     ["Donate", "/donate", "GIVE ❤"],
     ["Global Grants", "/grants", "DOSSIER"],
     ["366 AI Program", "/ai-designer", "AI"],
+    ["Tiny Worlds", "/tiny-worlds", "STORIES"],
     ["Ventures", "/ventures"],
     ["Games", "/games"],
     ["About", "/about"],
@@ -215,6 +216,7 @@ export function Footer() {
             <Link href="/grants#grant-programs">International Grant Matching Matrix</Link>
             <Link href="/grants#capital-budget">$385K Capital &amp; Equipment Stack</Link>
             <Link href="/ai-designer">366 AI Designer Program</Link>
+            <Link href="/tiny-worlds">Tiny Worlds Story Creator</Link>
             <Link href="/ai-designer#sovereign-compute">400B+ Sovereign AI Compute Core</Link>
             <Link href="/about">Governance &amp; Partner Information</Link>
           </div>
