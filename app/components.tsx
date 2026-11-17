@@ -46,6 +46,7 @@ export function Header() {
     ["Donate", "/donate", "GIVE ❤"],
     ["Global Grants", "/grants", "DOSSIER"],
     ["366 AI Program", "/ai-designer", "AI"],
+    ["Apps", "/apps"],
     ["Ventures", "/ventures"],
     ["Games", "/games"],
     ["About", "/about"],
