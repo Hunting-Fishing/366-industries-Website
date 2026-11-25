@@ -99,6 +99,22 @@ export async function POST(request: Request) {
       if (product.status !== "approved" || !product.rights_confirmed || !product.source_verified ||
         !product.description || contribution(product) <= 0 || product.shopify_id)
         return jsonError("Approve reviewed, verified, profitable product before Shopify sync.", 409);
+
+      // Fail closed on cross-currency prices: the internal Commerce OS uses USD,
+      // while the connected Shopify store may use PHP. A numeric price without
+      // conversion would otherwise be silently treated as the shop's currency.
+      const shopCurrencyResponse = await shopifyGraphQL(
+        "query CommerceShopCurrency { shop { currencyCode } }", {},
+      );
+      const shopCurrency = (shopCurrencyResponse.shop as { currencyCode?: string } | undefined)?.currencyCode;
+      if (!shopCurrency || shopCurrency !== product.currency) {
+        return jsonError(
+          "Currency mismatch: this product is priced in " + product.currency +
+          ", but Shopify uses " + (shopCurrency || "an unknown currency") +
+          ". Set and review local supplier costs and a PHP retail price before syncing. No draft was created.",
+          409,
+        );
+      }
       // Single-writer claim: concurrent requests cannot create two Shopify products.
       const claimed = await updateCommerceProduct(id, {status:"syncing"}, "&status=eq.approved&shopify_id=is.null");
       if (!claimed) return jsonError("Already being synced or approval changed.", 409);
