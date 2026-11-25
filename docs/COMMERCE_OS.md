@@ -61,3 +61,9 @@ No separate Python service is required to access the integrated Next.js dashboar
 See `docs/JORDI_SHOPIFY_PROMOTIONS.md` for the promotions tracker, personal build setup task tracker, canonical admin route, and strict 366 Industries Supabase project-ref binding.
 
 The data migration and permission checks are complete as of 2026-10-23; deployment credentials and end-to-end website persistence are **not** yet confirmed. Details: `docs/JORDI_SHOPIFY_PROMOTIONS.md`.
+
+## Store currency guard (November 2026)
+
+The connected shop `kefuqu-mv.myshopify.com` uses PHP. Commerce OS currently stores draft estimates in USD. The Shopify draft API now verifies the actual shop currency **before** creating a product. It refuses cross-currency numeric prices instead of treating USD values as PHP. No currency conversion is inferred, and the preflight does not mark an unsynced product as in progress. This protects merchants until a proper exchange-rate, fee, shipping, and local pricing workflow has been designed.
+
+The app `366 Industries Commerce OS` is installed and has `read_products`, `write_products`, and `read_orders` scopes (verified from live Shopify on Nov 26, 2026). Installing the app is not enough to authorize Railway or Cloudflare: each server independently needs its app Client secret stored in a server-only variable. For the Railway audit service, the public Shopify app Client ID is already set, and only `SHOPIFY_CLIENT_SECRET` and a Supabase server-only `JORDI_SHOPIFY_SUPABASE_SECRET_KEY` remain missing. Never paste either secret into GitHub, chat messages, or public files. The separate Printful/POD supplier app still requires merchant-side OAuth installation and a linked supplier account.
