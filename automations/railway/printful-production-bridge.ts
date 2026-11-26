@@ -12,28 +12,28 @@ async function getJson(url:string,headers:Record<string,string>){
 }
 async function audit(){
  const printfulToken=env("PRINTFUL_API_TOKEN");
- if(!printfulToken){console.log("PRINTFUL_TOKEN_REQUIRED: Add private token with sync_products/read scope to Railway Variables; Shopify app installation alone does not authorize the Printful API.");return;}
+ if(!printfulToken){console.log("PRINTFUL_TOKEN_REQUIRED: Add private token with stores_list/read and sync_products/read scopes to Railway Variables; Shopify app installation alone does not authorize the Printful API.");return;}
  const headers:Record<string,string>={Authorization:"Bearer "+printfulToken};
  const stores=await getJson("https://api.printful.com/stores",headers);
  const storeRecords=Array.isArray(stores.result)?stores.result as Array<Record<string,unknown>>:[];
- const relevant=storeRecords.filter(s=>{
-  const fields=JSON.stringify({name:s.name,website:s.website,url:s.url});
-  return fields.toLowerCase().includes("kefuqu-mv");
- });
- let storeId=env("PRINTFUL_STORE_ID");
- if(!storeId){
-  if(relevant.length!==1){
-   console.log(JSON.stringify({status:"PRINTFUL_STORE_SELECTION_REQUIRED",accessibleStoreCount:storeRecords.length,matchingStoreCount:relevant.length,
-    instruction:"Set PRINTFUL_STORE_ID to the verified store ID for kefuqu-mv.myshopify.com; no writes performed."}));
+ // Printful's /stores response doesn't reliably expose Shopify's *.myshopify.com
+ // domain. Require explicit merchant selection of the Printful Shopify store ID.
+ const storeId=env("PRINTFUL_STORE_ID");
+ if(!/^\\d+$/.test(storeId)){
+   console.log(JSON.stringify({status:"PRINTFUL_STORE_SELECTION_REQUIRED",accessibleStoreCount:storeRecords.length,
+     instruction:"In Printful Developer API, use stores_list/read to find your Shopify-linked store; add its numeric PRINTFUL_STORE_ID as a Railway variable."}));
    return;
-  }
-  storeId=String(relevant[0].id);
  }
- const matched=storeRecords.some(x=>String(x.id)===storeId && (JSON.stringify({name:x.name,url:x.url,website:x.website}).toLowerCase().includes("kefuqu-mv")));
- if(!matched){
-  console.log(JSON.stringify({status:"PRINTFUL_STORE_MISMATCH",storeIdVerified:false,accessibleStores:storeRecords.length,
-   instruction:"Verify the Printful Store ID matches Shopify domain kefuqu-mv.myshopify.com before using this bridge."}));
-  return;
+ const chosen=storeRecords.find(x=>String(x.id)===storeId);
+ if(!chosen || String(chosen.type).toLowerCase()!=="shopify"){
+   console.log(JSON.stringify({status:"PRINTFUL_STORE_NOT_A_SHOPIFY_STORE",configuredStoreId:storeId,accessibleStoreCount:storeRecords.length,noMutations:true}));
+   return;
+ }
+ // Explicit merchant attestation prevents using one of multiple Shopify stores by mistake.
+ if(env("PRINTFUL_VERIFIED_SHOP_DOMAIN")!==SHOP){
+   console.log(JSON.stringify({status:"PRINTFUL_SHOP_ATTESTATION_REQUIRED",storeName:String(chosen.name||""),type:String(chosen.type),
+     instruction:"Confirm in Printful Dashboard that the selected Printful Store ID connects to kefuqu-mv.myshopify.com, then set PRINTFUL_VERIFIED_SHOP_DOMAIN to that exact domain."}));
+   return;
  }
  headers["X-PF-Store-Id"]=storeId;
  const products=await getJson("https://api.printful.com/sync/products?limit=100",headers);
